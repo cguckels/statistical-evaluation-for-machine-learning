@@ -7,9 +7,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/Projekte/statistical-evaluation-for-machine-learning/statistical-evaluation/libs/jri/JRI.jar"/>
-	<classpathentry kind="lib" path="D:/Projekte/statistical-evaluation-for-machine-learning/statistical-evaluation/libs/jri/JRIEngine.jar"/>
-	<classpathentry kind="lib" path="D:/Projekte/statistical-evaluation-for-machine-learning/statistical-evaluation/libs/jri/REngine.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>

@@ -42,6 +42,12 @@
 			<version>2.4</version>
 		</dependency>
 	
+		<dependency>
+			<groupId>org.nuiton.thirdparty</groupId>
+			<artifactId>JRI</artifactId>
+			<version>0.9-6</version>
+		</dependency>
+	
 	</dependencies>
   
        <build>

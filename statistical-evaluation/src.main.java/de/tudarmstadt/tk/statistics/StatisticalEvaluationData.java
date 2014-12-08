@@ -3,7 +3,7 @@ package de.tudarmstadt.tk.statistics;
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ public class StatisticalEvaluationData {
 	private int[][] contingencyMatrix;
 	
 	//Samples: performance measure; model index; sample list
+	//Example: F-Measure, ((M1, (43,543,43,21)),(M2, (343,23,23)))
 	private HashMap<String, ArrayList<ArrayList<Double>>> samples;
 	
 	//Sum of samples: performance measure; model index; sum of samples

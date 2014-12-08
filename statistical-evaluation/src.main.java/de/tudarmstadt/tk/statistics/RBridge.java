@@ -3,7 +3,7 @@ package de.tudarmstadt.tk.statistics;
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import org.rosuda.JRI.REXP;
 import org.rosuda.JRI.RList;
 import org.rosuda.JRI.RMainLoopCallbacks;
 import org.rosuda.JRI.Rengine;
-import org.rosuda.REngine.REngineException;
 
 /**
  * Wrapper class for performing statistics using R and the JRI bridge (Singleton).
