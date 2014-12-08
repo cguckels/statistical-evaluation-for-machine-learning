@@ -550,6 +550,9 @@ public class RBridge{
 		
 		try{
 			
+			//Initialize required libraries
+	        engine.eval("usePackage('reshape2')");
+			
 	        // Pass array and 2d-array dimensions to R
 	        engine.assign("v", v);
 	        engine.assign("dimensions", new int[]{values.length,values[0].length});
@@ -1057,7 +1060,7 @@ public class RBridge{
 		double[] v = flattenArray(s);
 		
 		try{
-	        engine.eval("usePackage('reshape')");
+	        engine.eval("usePackage('reshape2')");
 	        engine.eval("usePackage('ggplot2')");
 			
 	        // Pass array and 2d-array dimensions to R
