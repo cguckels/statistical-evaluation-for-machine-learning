@@ -40,7 +40,7 @@ public class EvaluationResults implements java.io.Serializable{
 	private double significance_high = 1;
 	
 	//Entire sample information for a particular pipeline run
-	private SampleData sampleData;
+	private StatisticalEvaluationData sampleData;
 
 	//(Post-hoc) test results
 	private HashMap<String,Pair<String,AbstractTestResult>> parametricTestResults;
@@ -136,11 +136,11 @@ public class EvaluationResults implements java.io.Serializable{
 		return significance_high;
 	}
 	
-	public SampleData getSampleData() {
+	public StatisticalEvaluationData getSampleData() {
 		return sampleData;
 	}
 
-	public void setSampleData(SampleData sampleData) {
+	public void setSampleData(StatisticalEvaluationData sampleData) {
 		this.sampleData = sampleData;
 	}
 	

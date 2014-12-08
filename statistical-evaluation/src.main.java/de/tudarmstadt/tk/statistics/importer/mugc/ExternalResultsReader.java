@@ -54,7 +54,7 @@ import de.tudarmstadt.tk.statistics.EvaluationResultsWriter;
 import de.tudarmstadt.tk.statistics.ExternalResults;
 import de.tudarmstadt.tk.statistics.Helpers;
 import de.tudarmstadt.tk.statistics.ReportTypes;
-import de.tudarmstadt.tk.statistics.SampleData;
+import de.tudarmstadt.tk.statistics.StatisticalEvaluationData;
 import de.tudarmstadt.tk.statistics.Statistics;
 import de.tudarmstadt.tk.statistics.StatsConfigConstants;
 
@@ -484,7 +484,7 @@ public class ExternalResultsReader{
 	 * }
 	 */
 
-	public static SampleData interpretCSV(ArrayList<String[]> rows, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata, boolean isBaselineEvaluation) {
+	public static StatisticalEvaluationData interpretCSV(ArrayList<String[]> rows, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata, boolean isBaselineEvaluation) {
 
 		HashMap<Integer, ArrayList<ArrayList<Double>>> samplesPerMeasure = new HashMap<Integer, ArrayList<ArrayList<Double>>>();
 
@@ -643,7 +643,7 @@ public class ExternalResultsReader{
 			}	
 			
 			//Default: no baseline evaluation
-			SampleData sampleData = new SampleData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions,isBaselineEvaluation);
+			StatisticalEvaluationData sampleData = new StatisticalEvaluationData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions,isBaselineEvaluation);
 			sampleData = Helpers.truncateData(sampleData, selectBestN, selectByMeasure);
 			
 			return sampleData;
@@ -714,7 +714,7 @@ public class ExternalResultsReader{
 	public static void evaluate(String pathToCsvFile, String separator, ReportTypes pipelineType,  boolean isBaselineEvaluation, HashMap<String, Integer> pipelineMetadata) {
 
 		ArrayList<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
-		SampleData sampleData = interpretCSV(rows, pipelineType, pipelineMetadata, isBaselineEvaluation);
+		StatisticalEvaluationData sampleData = interpretCSV(rows, pipelineType, pipelineMetadata, isBaselineEvaluation);
 
 		// Perform statistical evaluation of data
 		Statistics stats = new Statistics();

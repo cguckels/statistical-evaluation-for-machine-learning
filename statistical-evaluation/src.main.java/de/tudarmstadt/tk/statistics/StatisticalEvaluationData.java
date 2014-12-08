@@ -30,24 +30,32 @@ import org.apache.commons.lang3.tuple.Pair;
  * @author Guckelsberger, Schulz
  *
  */
-public class SampleData {
+public class StatisticalEvaluationData {
 
 	//Pipeline type
 	private ReportTypes pipelineType;
+	
 	//Contingency matrix: Only!=null in case of two classifiers on a single domain
 	private int[][] contingencyMatrix;
+	
 	//Samples: performance measure; model index; sample list
 	private HashMap<String, ArrayList<ArrayList<Double>>> samples;
+	
 	//Sum of samples: performance measure; model index; sum of samples
 	private HashMap<String,ArrayList<Double>> samplesAverage;
+	
 	//Names of train/test datasets used in evaluation
 	private List<Pair<String,String>> datasetNames;
+	
 	//Metadata of the models (classifier, feature set)
 	private ArrayList<Pair<String,String>> modelMetadata;
+	
 	//Number of folds in case of a CV
 	private int nFolds;
+	
 	//Number of repetitions in case of a repeated evaluation
 	private int nRepetitions;
+	
 	//Indicates if this is a nxn or 1:n baseline evaluation
 	private boolean isBaselineEvaluation;
 
@@ -59,7 +67,7 @@ public class SampleData {
 	 * @param modelMetadata A HashMap comprising the metadata for each model (value), identified by an index (key)
 	 * @param isBaselineEvaluation A boolean expressing whether this test result came from a 1:n (baseline) or n:m evaluation
 	 */
-	public SampleData(
+	public StatisticalEvaluationData(
 			int[][] contingencyMatrix,
 			HashMap<String, ArrayList<ArrayList<Double>>> samples,
 			HashMap<String, ArrayList<Double>> samplesAverage,

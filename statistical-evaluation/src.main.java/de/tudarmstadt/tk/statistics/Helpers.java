@@ -37,12 +37,12 @@ public class Helpers {
 	
 /**
  * Remove models with the worst performance measures from the sample data if the no. of models exceeds a certain threshold. If a baseline evaluation is performed, the baseline model is retained. If the number of models does not exceed the specified threshold, nothing happens.
- * @param sampleData An object of type {@link SampleData}
+ * @param sampleData An object of type {@link StatisticalEvaluationData}
  * @param selectBestN Maximum number of models 
  * @param selectByMeasure Measure by which to select the models
  * @return the truncated SampleData object
  */
-public static SampleData truncateData(SampleData sampleData, int selectBestN, String selectByMeasure){
+public static StatisticalEvaluationData truncateData(StatisticalEvaluationData sampleData, int selectBestN, String selectByMeasure){
 		
 		int nModels=sampleData.getModelMetadata().size();
 				

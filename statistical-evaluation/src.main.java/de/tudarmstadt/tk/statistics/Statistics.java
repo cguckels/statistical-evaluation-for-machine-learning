@@ -88,7 +88,7 @@ public class Statistics {
 	 * @see de.tudarmstadt.tk.mugc.prototype.reports.AbstractPipelineReport#outputReport(java.util.List)
 	 * @return An object of type {@Link EvaluationResults} with the results of the statistical evaluation
 	 */
-	public EvaluationResults performStatisticalEvaluation(SampleData sampleData){
+	public EvaluationResults performStatisticalEvaluation(StatisticalEvaluationData sampleData){
 
 		EvaluationResults evalResults = new EvaluationResults();
 		evalResults.setSampleData(sampleData);
