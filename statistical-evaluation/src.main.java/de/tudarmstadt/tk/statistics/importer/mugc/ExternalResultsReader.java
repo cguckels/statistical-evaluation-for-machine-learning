@@ -31,12 +31,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +44,9 @@ import java.util.Map.Entry;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.tudarmstadt.tk.statistics.EvaluationResults;
 import de.tudarmstadt.tk.statistics.EvaluationResultsWriter;
@@ -58,21 +57,19 @@ import de.tudarmstadt.tk.statistics.StatisticalEvaluationData;
 import de.tudarmstadt.tk.statistics.Statistics;
 import de.tudarmstadt.tk.statistics.StatsConfigConstants;
 
-
 /**
  * @author Guckelsberger, Schulz
  */
-public class ExternalResultsReader{
-	
-    private static final Logger logger = LogManager.getLogger("Statistics");
-	
-	public static void readMUGCTrainTest(String filePath)
-	{
-		HashMap<String,Double> aggregatedMeasures = new HashMap<>();
-		
+public class ExternalResultsReader {
+
+	private static final Logger logger = LogManager.getLogger("Statistics");
+
+	public static void readMUGCTrainTest(String filePath) {
+		HashMap<String, Double> aggregatedMeasures = new HashMap<>();
+
 		String outFileName = "AggregatedTrainTest.csv";
-		
-		logger.log(Level.INFO, String.format("Importing data from directory %s.",filePath));
+
+		logger.log(Level.INFO, String.format("Importing data from directory %s.", filePath));
 
 		// Method requires input directory. Check this condition.
 		File directory = new File(filePath);
@@ -81,11 +78,11 @@ public class ExternalResultsReader{
 			return;
 		}
 
-		//Empty previous output file, if there was one
-		File outputFile = new File(directory.getParentFile(),outFileName);
-        if (outputFile.exists()){
-        	outputFile.delete();
-        }  
+		// Empty previous output file, if there was one
+		File outputFile = new File(directory.getParentFile(), outFileName);
+		if (outputFile.exists()) {
+			outputFile.delete();
+		}
 		try {
 			String header = "Train;Test;Classifier;FeatureSet;Measure;Value";
 
@@ -96,7 +93,7 @@ public class ExternalResultsReader{
 			System.err.println("Error while writing aggregated Train-Test file.");
 			e.printStackTrace();
 		}
-		
+
 		ArrayList<String> outputRows = new ArrayList<String>();
 
 		// iterate all rows
@@ -112,98 +109,92 @@ public class ExternalResultsReader{
 
 		for (int i = 0; i < inputRowsFirstFile.size(); i++) {
 			ExternalResults results = new ExternalResults();
-			
+
 			// identify current train/test split
-			String[] datasetNames = inputRowsFirstFile.get(i)[0].replace("TRAIN:", "").replace("TEST:","").split(",");
-			results.trainSetName = datasetNames[0].replace(" ","");
-			results.testSetName = datasetNames[1].replace(" ","");
+			String[] datasetNames = inputRowsFirstFile.get(i)[0].replace("TRAIN:", "").replace("TEST:", "").split(",");
+			results.trainSetName = datasetNames[0].replace(" ", "");
+			results.testSetName = datasetNames[1].replace(" ", "");
 
 			// set classifier name
 			results.classifierParameters = inputRowsFirstFile.get(i)[1];
-			
+
 			// read feature set
 			results.featureSetName = inputRowsFirstFile.get(i)[2];
-			
+
 			// read classification results
 			results.recall = Double.parseDouble(inputRowsFirstFile.get(i)[3]);
-			results.fMeasure= Double.parseDouble(inputRowsFirstFile.get(i)[4]);
-			results.precision= Double.parseDouble(inputRowsFirstFile.get(i)[5]);
-			results.accuracy= Double.parseDouble(inputRowsFirstFile.get(i)[10])/100;
+			results.fMeasure = Double.parseDouble(inputRowsFirstFile.get(i)[4]);
+			results.precision = Double.parseDouble(inputRowsFirstFile.get(i)[5]);
+			results.accuracy = Double.parseDouble(inputRowsFirstFile.get(i)[10]) / 100;
 
 			extResults.add(results);
 		}
-		
-		HashMap<String,ArrayList<ExternalResults>> extResultsByTrainTestFeature = new HashMap<>();
+
+		HashMap<String, ArrayList<ExternalResults>> extResultsByTrainTestFeature = new HashMap<>();
 
 		// order by test set
-		for(ExternalResults result : extResults)
-		{
+		for (ExternalResults result : extResults) {
 			String IdKey = result.trainSetName + result.testSetName + result.featureSetName;
-			
-			if(extResultsByTrainTestFeature.containsKey(IdKey))
-			{
+
+			if (extResultsByTrainTestFeature.containsKey(IdKey)) {
 				extResultsByTrainTestFeature.get(IdKey).add(result);
-			}
-			else
-			{
+			} else {
 				extResultsByTrainTestFeature.put(IdKey, new ArrayList<ExternalResults>());
 				extResultsByTrainTestFeature.get(IdKey).add(result);
 			}
 		}
-		
+
 		ArrayList<ExternalResults> aggregatedResults = new ArrayList<>();
-		
+
 		// aggregate results or keep as are
-		for(Entry<String,ArrayList<ExternalResults>> trainTestSplit : extResultsByTrainTestFeature.entrySet())
-		{
+		for (Entry<String, ArrayList<ExternalResults>> trainTestSplit : extResultsByTrainTestFeature.entrySet()) {
 			ExternalResults aggrResult = new ExternalResults();
-			
+
 			double recall = 0;
 			double fMeasure = 0;
 			double precision = 0;
 			double accuracy = 0;
 			int nrClassifiers = 0;
-			
-			// for all entries that are from the same train/test split and use the same feature set -> aggregate results
-			for(ExternalResults result : trainTestSplit.getValue())
-			{
+
+			// for all entries that are from the same train/test split and use
+			// the same feature set -> aggregate results
+			for (ExternalResults result : trainTestSplit.getValue()) {
 				aggrResult.testSetName = result.testSetName;
 				aggrResult.trainSetName = result.trainSetName;
 				aggrResult.classifierParameters = result.classifierParameters;
 				aggrResult.featureSetName = result.featureSetName;
-				
+
 				recall += result.recall;
 				fMeasure += result.fMeasure;
-				precision+= result.precision;
-				accuracy+= result.accuracy;
+				precision += result.precision;
+				accuracy += result.accuracy;
 				nrClassifiers++;
 			}
-			
+
 			aggrResult.accuracy = (accuracy / nrClassifiers);
 			aggrResult.fMeasure = (fMeasure / nrClassifiers);
 			aggrResult.recall = (recall / nrClassifiers);
 			aggrResult.precision = (precision / nrClassifiers);
-			
+
 			aggregatedResults.add(aggrResult);
 		}
-			
-			// write values of measure
-			for(ExternalResults result : aggregatedResults)
-			{
-				String outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Percent Correct", result.accuracy);
-				outputRows.add(outputRow);
-				
-				outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted Precision", result.precision);
-				outputRows.add(outputRow);
 
-				outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted Recall", result.recall);
-				outputRows.add(outputRow);
+		// write values of measure
+		for (ExternalResults result : aggregatedResults) {
+			String outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Percent Correct", result.accuracy);
+			outputRows.add(outputRow);
 
-				outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted F-Measure", result.fMeasure);
-				outputRows.add(outputRow);
+			outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted Precision", result.precision);
+			outputRows.add(outputRow);
 
-			}
-			
+			outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted Recall", result.recall);
+			outputRows.add(outputRow);
+
+			outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted F-Measure", result.fMeasure);
+			outputRows.add(outputRow);
+
+		}
+
 		// Write aggregated data to a new file
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter(outputFile, true));
@@ -215,19 +206,19 @@ public class ExternalResultsReader{
 			System.err.println("Error while writing aggregated Train-Test file.");
 			e.printStackTrace();
 		}
-	
-		logger.log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.",outFileName));
+
+		logger.log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.", outFileName));
 	}
 
 	public static void readAxelTrainTest(String pathToDirectory) {
 		Locale.setDefault(Locale.ENGLISH);
-				
+
 		String[] semanticFeatures = new String[] { "Baseline", "+ALL", "+LOC", "+TIME", "+LOD", "+LOC+TIME", "+LOC+LOD", "+TIME+LOD", "+TYPES", "+CAT" };
 		String[] measures = new String[] { "Percent Correct", "Weighted Precision", "Weighted Recall", "Weighted F-Measure" };
 		String outFileName = "AggregatedCVRandom.csv";
-		
-		logger.log(Level.INFO, String.format("Importing data from directory %s.",pathToDirectory));
-        
+
+		logger.log(Level.INFO, String.format("Importing data from directory %s.", pathToDirectory));
+
 		// Method requires input directory. Check this condition.
 		File directory = new File(pathToDirectory);
 		if (!directory.isDirectory()) {
@@ -235,11 +226,11 @@ public class ExternalResultsReader{
 			return;
 		}
 
-		//Empty previous output file, if there was one
-		File outputFile = new File(directory,outFileName);
-        if (outputFile.exists()){
-        	outputFile.delete();
-        }  
+		// Empty previous output file, if there was one
+		File outputFile = new File(directory, outFileName);
+		if (outputFile.exists()) {
+			outputFile.delete();
+		}
 		try {
 			String header = "Train;Test;Classifier;FeatureSet;Measure;Value";
 
@@ -250,14 +241,14 @@ public class ExternalResultsReader{
 			System.err.println("Error while writing aggregated Train-Test file.");
 			e.printStackTrace();
 		}
-		
+
 		// prepare files lists
 		HashMap<String, ArrayList<File>> filesMap = new HashMap<>();
 
 		// read all subdirectories that match the city names
 		File[] subdirs = directory.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
 
-		//Iterate all subdirectories
+		// Iterate all subdirectories
 		for (File subDirectory : subdirs) {
 
 			// get train set name
@@ -270,38 +261,34 @@ public class ExternalResultsReader{
 			for (File subDirFile : fileList) {
 				// get name of test data set
 				String[] filenameTokens = subDirFile.getName().split("To");
-				//String testDataName = filenameTokens[1].substring(0, filenameTokens[1].length() - 11);
+				// String testDataName = filenameTokens[1].substring(0,
+				// filenameTokens[1].length() - 11);
 
-				
 				String testDataName;
-				
+
 				// if only this string is left, then CV
-				if (filenameTokens[1].equals("Results.csv"))
-				{
+				if (filenameTokens[1].equals("Results.csv")) {
 					testDataName = trainSetName;
-				}
-				else
-				{
+				} else {
 					testDataName = filenameTokens[1].split("Results.csv")[0];
 					testDataName = testDataName.split("2C.csv|4C.csv|.csv")[0];
 				}
-				
-//				if (filenameTokens[0].contains("LINEAR") == false)
-//					continue;
 
-//				if (filenameTokens[0].contains("JRip") == false)
-//					continue;
-				
-//				if (filenameTokens[0].contains("Naive") == false)
-//					continue;
+				// if (filenameTokens[0].contains("LINEAR") == false)
+				// continue;
 
-//				if (filenameTokens[0].contains("J48") == false)
-//					continue;
-				
-//				if (filenameTokens[0].contains("Random") == false)
-//				continue;
+				// if (filenameTokens[0].contains("JRip") == false)
+				// continue;
 
-				
+				// if (filenameTokens[0].contains("Naive") == false)
+				// continue;
+
+				// if (filenameTokens[0].contains("J48") == false)
+				// continue;
+
+				// if (filenameTokens[0].contains("Random") == false)
+				// continue;
+
 				// put current file to test data name -> this way all files
 				// corresponding to the same test set are in one map
 				if (filesMap.get(testDataName) != null) {
@@ -447,8 +434,8 @@ public class ExternalResultsReader{
 				e.printStackTrace();
 			}
 		}
-		
-		logger.log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.",outFileName));
+
+		logger.log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.", outFileName));
 
 	}
 
@@ -493,19 +480,20 @@ public class ExternalResultsReader{
 		if (rows.size() > 1) {
 
 			logger.log(Level.INFO, "Extracting samples and metadata from imported data.");
-			
-			//Read statistics evaluation parameters and required measures from config file
+
+			// Read statistics evaluation parameters and required measures from
+			// config file
 			int selectBestN = 0;
-			String selectByMeasure=null;
-			try{	
-				HashMap<String,Object> parameters = Statistics.readParametersFromConfig();
-				selectBestN = (int)parameters.get(StatsConfigConstants.SELECT_BEST_N);
-				selectByMeasure = (String)parameters.get(StatsConfigConstants.SELECT_BEST_N_BY_MEASURE);
-			}catch(Exception e){
-				String error="Error while reading statistics config file.";
+			String selectByMeasure = null;
+			try {
+				HashMap<String, Object> parameters = Statistics.readParametersFromConfig();
+				selectBestN = (int) parameters.get(StatsConfigConstants.SELECT_BEST_N);
+				selectByMeasure = (String) parameters.get(StatsConfigConstants.SELECT_BEST_N_BY_MEASURE);
+			} catch (Exception e) {
+				String error = "Error while reading statistics config file.";
 				logger.log(Level.ERROR, error);
-			}	
-			
+			}
+
 			// Preprocessing: Parse different models (classifier + feature set
 			// column) and measures
 			ArrayList<String> measures = new ArrayList<String>();
@@ -515,11 +503,11 @@ public class ExternalResultsReader{
 			for (int i = 0; i < rows.size(); i++) {
 				String[] columns = rows.get(i);
 				String classifier = columns[2];
-				if(classifier.equals("0")){
-					classifier="Aggregated";
+				if (classifier.equals("0")) {
+					classifier = "Aggregated";
 				}
 				String featureSets = columns[3];
-				Pair<String, String> model = Pair.of(classifier,featureSets);
+				Pair<String, String> model = Pair.of(classifier, featureSets);
 				if (!models.contains(model)) {
 					models.add(model);
 				}
@@ -538,7 +526,7 @@ public class ExternalResultsReader{
 				if (trainData.equals(testData)) {
 					data = Pair.of(trainData, null);
 				} else {
-					//columns[1] = columns[1].split(".")[0];
+					// columns[1] = columns[1].split(".")[0];
 					data = Pair.of(trainData, testData);
 				}
 				if (!datasets.contains(data)) {
@@ -559,8 +547,8 @@ public class ExternalResultsReader{
 			for (int i = 0; i < rows.size(); i++) {
 				String[] columns = rows.get(i);
 				String classifier = columns[2];
-				if(classifier.equals("0")){
-					classifier="Aggregated";
+				if (classifier.equals("0")) {
+					classifier = "Aggregated";
 				}
 				String featureSet = columns[3];
 				String measure = columns[4];
@@ -640,23 +628,30 @@ public class ExternalResultsReader{
 			default:
 				System.err.println("Unknown PipelineType. Aborting.");
 				return null;
-			}	
-			
-			//Default: no baseline evaluation
-			StatisticalEvaluationData sampleData = new StatisticalEvaluationData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions,isBaselineEvaluation);
+			}
+
+			// Default: no baseline evaluation
+			StatisticalEvaluationData sampleData = new StatisticalEvaluationData(null, indexedSamples, indexedSamplesAverage, datasets, models, pipelineType, nFolds, nRepetitions, isBaselineEvaluation);
 			sampleData = Helpers.truncateData(sampleData, selectBestN, selectByMeasure);
-			
+
 			return sampleData;
 		}
 		return null;
 	}
 
 	/**
-	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
-	 * Use this method if the data stems from an n-fold cross-validation. Each line should represent the model's performance for one fold of the CV.
-	 * @param pathToCsvFile The path to the external data file.
-	 * @param separator The character used to separate columns in the file.
-	 * @param againstBaseline If set to true, all models are compared against the first model specified in the external data.
+	 * Triggers a statistical evaluation of external data and stores the report
+	 * in the same folder. Use this method if the data stems from an n-fold
+	 * cross-validation. Each line should represent the model's performance for
+	 * one fold of the CV.
+	 * 
+	 * @param pathToCsvFile
+	 *            The path to the external data file.
+	 * @param separator
+	 *            The character used to separate columns in the file.
+	 * @param againstBaseline
+	 *            If set to true, all models are compared against the first
+	 *            model specified in the external data.
 	 */
 	public static void evaluateCV(String pathToCsvFile, String separator, boolean againstBaseline) {
 		logger.log(Level.INFO, "Starting evaluation of data from a simple cross-validation.");
@@ -666,43 +661,59 @@ public class ExternalResultsReader{
 	}
 
 	/**
-	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
-	 * Use this method if the data stems from a repeated n-fold cross-validation. Each line should represent the model's performance for one CV averaged over all folds.
-	 * @param pathToCsvFile The path to the external data file.
-	 * @param separator The character used to separate columns in the file.
-	 * @param againstBaseline If set to true, all models are compared against the first model specified in the external data.
+	 * Triggers a statistical evaluation of external data and stores the report
+	 * in the same folder. Use this method if the data stems from a repeated
+	 * n-fold cross-validation. Each line should represent the model's
+	 * performance for one CV averaged over all folds.
+	 * 
+	 * @param pathToCsvFile
+	 *            The path to the external data file.
+	 * @param separator
+	 *            The character used to separate columns in the file.
+	 * @param againstBaseline
+	 *            If set to true, all models are compared against the first
+	 *            model specified in the external data.
 	 */
 	public static void evaluateRepeatedCV(String pathToCsvFile, String separator, int nFolds, boolean againstBaseline) {
 		logger.log(Level.INFO, "Starting evaluation of data from a repeated cross-validation.");
-		
+
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
 		pipelineMetadata.put("nFolds", nFolds);
 		evaluate(pathToCsvFile, separator, ReportTypes.MULTIPLE_CV, againstBaseline, pipelineMetadata);
 	}
 
 	/*
-	// Multi-Domain CV: Each line=average performance per CV
-	public static void evaluateMultiDomainCV(String pathToCsvFile, String separator, int nFolds, boolean againstBaseline) {
-		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		pipelineMetadata.put("nFolds", nFolds);
-		evaluate(pathToCsvFile, separator, ReportTypes.CV_DATASET_LVL, againstBaseline, pipelineMetadata);
-	}
-
-	// Multi-Domain Repeated CV: Each line=average performance over all
-	// repetitions
-	public static void evaluateMultiDomainRepeatedCV(String pathToCsvFile, String separator, int nFolds, int nRepetitions, boolean againstBaseline) {
-		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		pipelineMetadata.put("nFolds", nFolds);
-		pipelineMetadata.put("nRepetitions", nRepetitions);
-		evaluate(pathToCsvFile, separator, ReportTypes.MULTIPLE_CV_DATASET_LVL, againstBaseline, pipelineMetadata);
-	}*/
+	 * // Multi-Domain CV: Each line=average performance per CV public static
+	 * void evaluateMultiDomainCV(String pathToCsvFile, String separator, int
+	 * nFolds, boolean againstBaseline) { HashMap<String, Integer>
+	 * pipelineMetadata = new HashMap<String, Integer>();
+	 * pipelineMetadata.put("nFolds", nFolds); evaluate(pathToCsvFile,
+	 * separator, ReportTypes.CV_DATASET_LVL, againstBaseline,
+	 * pipelineMetadata); }
+	 * 
+	 * // Multi-Domain Repeated CV: Each line=average performance over all //
+	 * repetitions public static void evaluateMultiDomainRepeatedCV(String
+	 * pathToCsvFile, String separator, int nFolds, int nRepetitions, boolean
+	 * againstBaseline) { HashMap<String, Integer> pipelineMetadata = new
+	 * HashMap<String, Integer>(); pipelineMetadata.put("nFolds", nFolds);
+	 * pipelineMetadata.put("nRepetitions", nRepetitions);
+	 * evaluate(pathToCsvFile, separator, ReportTypes.MULTIPLE_CV_DATASET_LVL,
+	 * againstBaseline, pipelineMetadata); }
+	 */
 
 	/**
-	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
-	 * Use this method if the data stems from a Train-Test-Evaluation. Each line should represent the model's performance for one test.
-	 * @param pathToCsvFile The path to the external data file.
-	 * @param separator The character used to separate columns in the file.
-	 * @param againstBaseline If set to true, all models are compared against the first model specified in the external data.
+	 * Triggers a statistical evaluation of external data and stores the report
+	 * in the same folder. Use this method if the data stems from a
+	 * Train-Test-Evaluation. Each line should represent the model's performance
+	 * for one test.
+	 * 
+	 * @param pathToCsvFile
+	 *            The path to the external data file.
+	 * @param separator
+	 *            The character used to separate columns in the file.
+	 * @param againstBaseline
+	 *            If set to true, all models are compared against the first
+	 *            model specified in the external data.
 	 */
 	public static void evaluateTrainTest(String pathToCsvFile, String separator, boolean againstBaseline) {
 		logger.log(Level.INFO, "Starting evaluation of data from a Train-Test scenario.");
@@ -711,7 +722,7 @@ public class ExternalResultsReader{
 		evaluate(pathToCsvFile, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, againstBaseline, pipelineMetadata);
 	}
 
-	public static void evaluate(String pathToCsvFile, String separator, ReportTypes pipelineType,  boolean isBaselineEvaluation, HashMap<String, Integer> pipelineMetadata) {
+	public static void evaluate(String pathToCsvFile, String separator, ReportTypes pipelineType, boolean isBaselineEvaluation, HashMap<String, Integer> pipelineMetadata) {
 
 		ArrayList<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
 		StatisticalEvaluationData sampleData = interpretCSV(rows, pipelineType, pipelineMetadata, isBaselineEvaluation);
@@ -738,8 +749,12 @@ public class ExternalResultsReader{
 	 * Read csv file, split each line by the specified separator and check
 	 * whether each line can be split into the same number of columns
 	 * 
-	 * @param pathToCsvFile the path to the .csv file
-	 * @param separator the separator to be used to split a line in separate cells, each relating to one column ArrayList<String[]> containing all lines split into tokens
+	 * @param pathToCsvFile
+	 *            the path to the .csv file
+	 * @param separator
+	 *            the separator to be used to split a line in separate cells,
+	 *            each relating to one column ArrayList<String[]> containing all
+	 *            lines split into tokens
 	 */
 	private static ArrayList<String[]> readAndCheckCSV(String pathToCsvFile, String separator) {
 		ArrayList<String[]> data = new ArrayList<String[]>();
@@ -774,8 +789,11 @@ public class ExternalResultsReader{
 	 * Creates a latex and plain report of the evaluation results and writes it
 	 * into the specified directory
 	 * 
-	 * @param pathToDirectory directory in which the reports should be written
-	 * @param evalResults results of the statistical evaluation to be described in the reports
+	 * @param pathToDirectory
+	 *            directory in which the reports should be written
+	 * @param evalResults
+	 *            results of the statistical evaluation to be described in the
+	 *            reports
 	 */
 	private static void createEvaluationReport(String pathToDirectory, EvaluationResults evalResults) {
 
@@ -786,7 +804,7 @@ public class ExternalResultsReader{
 			}
 			File latexFile = new File(directory, "statisticalReport.tex");
 			File plainFile = new File(directory, "statisticalReport.txt");
-			
+
 			EvaluationResultsWriter resultsWriter = new EvaluationResultsWriter(evalResults);
 			String latexReport = resultsWriter.createLatexReport(latexFile.getParentFile());
 			String plainReport = resultsWriter.createPlainReport();
@@ -794,12 +812,12 @@ public class ExternalResultsReader{
 			Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(latexFile)));
 			out.write(latexReport);
 			out.close();
-			logger.log(Level.INFO, String.format("Wrote plain report of statistical evaluation to %s.",plainFile.toPath()));
+			logger.log(Level.INFO, String.format("Wrote plain report of statistical evaluation to %s.", plainFile.toPath()));
 
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(plainFile)));
 			out.write(plainReport);
 			out.close();
-			logger.log(Level.INFO, String.format("Wrote Latex report of statistical evaluation to %s.",latexFile.toPath()));
+			logger.log(Level.INFO, String.format("Wrote Latex report of statistical evaluation to %s.", latexFile.toPath()));
 
 		} catch (IOException e) {
 			e.printStackTrace();

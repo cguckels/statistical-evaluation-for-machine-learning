@@ -27,57 +27,61 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * Container to store the results of a statistical evaluation, i.e. the p-values, parameters and statistics of the individual tests, the names of the data sets, the metadata of the evaluated models etc.
+ * Container to store the results of a statistical evaluation, i.e. the
+ * p-values, parameters and statistics of the individual tests, the names of the
+ * data sets, the metadata of the evaluated models etc.
+ * 
  * @author Guckelsberger, Schulz
  */
-public class EvaluationResults implements java.io.Serializable{
-	
+public class EvaluationResults implements java.io.Serializable {
+
 	private static final long serialVersionUID = -8891642496921094578L;
-	
-	//Pre-defined significance levels. Changes will affect what is deemed high/medium/low/not significant in the reports
+
+	// Pre-defined significance levels. Changes will affect what is deemed
+	// high/medium/low/not significant in the reports
 	private double significance_low = 1;
 	private double significance_medium = 1;
 	private double significance_high = 1;
-	
-	//Entire sample information for a particular pipeline run
+
+	// Entire sample information for a particular pipeline run
 	private StatisticalEvaluationData sampleData;
 
-	//(Post-hoc) test results
-	private HashMap<String,Pair<String,AbstractTestResult>> parametricTestResults;
-	private HashMap<String,Pair<String,AbstractTestResult>> parametricPostHocTestResults;
-	private HashMap<String,Pair<String,AbstractTestResult>> nonParametricTestResults;
-	private HashMap<String,Pair<String,AbstractTestResult>> nonParametricPostHocTestResults;
-	
-	//(Post-hoc) n x m comparisons ordering
-	private HashMap<String,HashMap<Integer,TreeSet<Integer>>> parameticPostHocOrdering;
-	private HashMap<String,int[][]> parameticPostHocEdgelist;
-	private HashMap<String,HashMap<Integer,TreeSet<Integer>>> nonParameticPostHocOrdering;
-	private HashMap<String,int[][]> nonParameticPostHocEdgelist;
+	// (Post-hoc) test results
+	private HashMap<String, Pair<String, AbstractTestResult>> parametricTestResults;
+	private HashMap<String, Pair<String, AbstractTestResult>> parametricPostHocTestResults;
+	private HashMap<String, Pair<String, AbstractTestResult>> nonParametricTestResults;
+	private HashMap<String, Pair<String, AbstractTestResult>> nonParametricPostHocTestResults;
 
-	//Applied tests
+	// (Post-hoc) n x m comparisons ordering
+	private HashMap<String, HashMap<Integer, TreeSet<Integer>>> parameticPostHocOrdering;
+	private HashMap<String, int[][]> parameticPostHocEdgelist;
+	private HashMap<String, HashMap<Integer, TreeSet<Integer>>> nonParameticPostHocOrdering;
+	private HashMap<String, int[][]> nonParameticPostHocEdgelist;
+
+	// Applied tests
 	private String parametricTest = null;
 	private String parametricPostHocTest = null;
 	private String nonParametricTest = null;
 	private String nonParametricPostHocTest = null;
-	
-	//Evaluated performance measures
+
+	// Evaluated performance measures
 	private HashSet<String> measures = null;
-	
-	//Indicates if this is a nxn or 1:n baseline evaluation
+
+	// Indicates if this is a nxn or 1:n baseline evaluation
 	private boolean isBaselineEvaluation = false;
 
-	public EvaluationResults(){
-		parametricTestResults = new HashMap<String,Pair<String,AbstractTestResult>>();
-		nonParametricTestResults = new HashMap<String,Pair<String,AbstractTestResult>>();
-		parametricPostHocTestResults = new HashMap<String,Pair<String,AbstractTestResult>>();
-		nonParametricPostHocTestResults = new HashMap<String,Pair<String,AbstractTestResult>>();
-		parameticPostHocOrdering = new HashMap<String,HashMap<Integer,TreeSet<Integer>>>();
-		nonParameticPostHocOrdering = new HashMap<String,HashMap<Integer,TreeSet<Integer>>>();
-		parameticPostHocEdgelist = new HashMap<String,int[][]>();
-		nonParameticPostHocEdgelist = new HashMap<String,int[][]>();
+	public EvaluationResults() {
+		parametricTestResults = new HashMap<String, Pair<String, AbstractTestResult>>();
+		nonParametricTestResults = new HashMap<String, Pair<String, AbstractTestResult>>();
+		parametricPostHocTestResults = new HashMap<String, Pair<String, AbstractTestResult>>();
+		nonParametricPostHocTestResults = new HashMap<String, Pair<String, AbstractTestResult>>();
+		parameticPostHocOrdering = new HashMap<String, HashMap<Integer, TreeSet<Integer>>>();
+		nonParameticPostHocOrdering = new HashMap<String, HashMap<Integer, TreeSet<Integer>>>();
+		parameticPostHocEdgelist = new HashMap<String, int[][]>();
+		nonParameticPostHocEdgelist = new HashMap<String, int[][]>();
 		measures = new HashSet<String>();
 	}
-	
+
 	public boolean isBaselineEvaluation() {
 		return isBaselineEvaluation;
 	}
@@ -86,22 +90,22 @@ public class EvaluationResults implements java.io.Serializable{
 		this.isBaselineEvaluation = isBaselineEvaluation;
 	}
 
-	public void addParametricTestResult(Pair<String,AbstractTestResult> result, String measure){
-		this.parametricTestResults.put(measure,result);
+	public void addParametricTestResult(Pair<String, AbstractTestResult> result, String measure) {
+		this.parametricTestResults.put(measure, result);
 	}
 
 	public void addNonParametricTestResult(Pair<String, AbstractTestResult> nonParametricTestResult, String measure) {
-		this.nonParametricTestResults.put(measure,nonParametricTestResult);
-	}	
-	
-	public void addParametricPostHocTestResult(Pair<String,AbstractTestResult> result, String measure){
-		this.parametricPostHocTestResults.put(measure,result);
+		this.nonParametricTestResults.put(measure, nonParametricTestResult);
+	}
+
+	public void addParametricPostHocTestResult(Pair<String, AbstractTestResult> result, String measure) {
+		this.parametricPostHocTestResults.put(measure, result);
 	}
 
 	public void addNonParametricPostHocTestResult(Pair<String, AbstractTestResult> nonParametricTestResult, String measure) {
-		this.nonParametricPostHocTestResults.put(measure,nonParametricTestResult);
+		this.nonParametricPostHocTestResults.put(measure, nonParametricTestResult);
 	}
-	
+
 	public HashMap<String, Pair<String, AbstractTestResult>> getParametricTestResults() {
 		return parametricTestResults;
 	}
@@ -117,11 +121,11 @@ public class EvaluationResults implements java.io.Serializable{
 	public HashMap<String, Pair<String, AbstractTestResult>> getNonParametricPostHocTestResults() {
 		return nonParametricPostHocTestResults;
 	}
-	
-	public void setSignificanceLevel(double low, double medium, double high){
-		this.significance_low=low;
-		this.significance_medium=medium;
-		this.significance_high=high;
+
+	public void setSignificanceLevel(double low, double medium, double high) {
+		this.significance_low = low;
+		this.significance_medium = medium;
+		this.significance_high = high;
 	}
 
 	public double getSignificance_low() {
@@ -135,7 +139,7 @@ public class EvaluationResults implements java.io.Serializable{
 	public double getSignificance_high() {
 		return significance_high;
 	}
-	
+
 	public StatisticalEvaluationData getSampleData() {
 		return sampleData;
 	}
@@ -143,7 +147,7 @@ public class EvaluationResults implements java.io.Serializable{
 	public void setSampleData(StatisticalEvaluationData sampleData) {
 		this.sampleData = sampleData;
 	}
-	
+
 	public String getParametricTest() {
 		return parametricTest;
 	}
@@ -175,12 +179,12 @@ public class EvaluationResults implements java.io.Serializable{
 	public void setNonParametricPostHocTest(String nonParametricPostHocTest) {
 		this.nonParametricPostHocTest = nonParametricPostHocTest;
 	}
-	
+
 	public ArrayList<String> getMeasures() {
 		return new ArrayList<String>(measures);
 	}
-	
-	public void addMeasure(String measure){
+
+	public void addMeasure(String measure) {
 		this.measures.add(measure);
 	}
 
@@ -188,8 +192,7 @@ public class EvaluationResults implements java.io.Serializable{
 		return parameticPostHocOrdering;
 	}
 
-	public void setParameticPostHocOrdering(
-			HashMap<String, HashMap<Integer, TreeSet<Integer>>> parameticPostHocOrdering) {
+	public void setParameticPostHocOrdering(HashMap<String, HashMap<Integer, TreeSet<Integer>>> parameticPostHocOrdering) {
 		this.parameticPostHocOrdering = parameticPostHocOrdering;
 	}
 
@@ -197,8 +200,7 @@ public class EvaluationResults implements java.io.Serializable{
 		return nonParameticPostHocOrdering;
 	}
 
-	public void setNonParameticPostHocOrdering(
-			HashMap<String, HashMap<Integer, TreeSet<Integer>>> nonParameticPostHocOrdering) {
+	public void setNonParameticPostHocOrdering(HashMap<String, HashMap<Integer, TreeSet<Integer>>> nonParameticPostHocOrdering) {
 		this.nonParameticPostHocOrdering = nonParameticPostHocOrdering;
 	}
 
@@ -206,8 +208,7 @@ public class EvaluationResults implements java.io.Serializable{
 		return parameticPostHocEdgelist;
 	}
 
-	public void setParameticPostHocEdgelist(
-			HashMap<String, int[][]> parameticPostHocEdgelist) {
+	public void setParameticPostHocEdgelist(HashMap<String, int[][]> parameticPostHocEdgelist) {
 		this.parameticPostHocEdgelist = parameticPostHocEdgelist;
 	}
 
@@ -215,9 +216,8 @@ public class EvaluationResults implements java.io.Serializable{
 		return nonParameticPostHocEdgelist;
 	}
 
-	public void setNonParameticPostHocEdgelist(
-			HashMap<String, int[][]> nonParameticPostHocEdgelist) {
+	public void setNonParameticPostHocEdgelist(HashMap<String, int[][]> nonParameticPostHocEdgelist) {
 		this.nonParameticPostHocEdgelist = nonParameticPostHocEdgelist;
 	}
-	
+
 }

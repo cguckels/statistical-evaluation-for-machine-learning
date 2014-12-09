@@ -22,20 +22,22 @@ package de.tudarmstadt.tk.statistics;
 import java.util.HashMap;
 
 /**
- * Abstract class for the result of a statistics test, comprising fields both present for tests on two or more entities
+ * Abstract class for the result of a statistics test, comprising fields both
+ * present for tests on two or more entities
+ * 
  * @author Guckelsberger, Schulz
  */
 public abstract class AbstractTestResult {
-	
+
 	protected String method;
 	protected String statisticType;
-	protected HashMap<String,Double> parameter;
-	protected HashMap<String,AbstractTestResult> assumptions;
-	
+	protected HashMap<String, Double> parameter;
+	protected HashMap<String, AbstractTestResult> assumptions;
+
 	public AbstractTestResult(String method, HashMap<String, Double> parameter) {
 		this.method = method;
 		this.parameter = parameter;
-		assumptions = new HashMap<String,AbstractTestResult>();
+		assumptions = new HashMap<String, AbstractTestResult>();
 	}
 
 	public String getMethod() {
@@ -45,8 +47,8 @@ public abstract class AbstractTestResult {
 	public HashMap<String, Double> getParameter() {
 		return parameter;
 	}
-	
-	public HashMap<String,AbstractTestResult> getAssumptions(){
+
+	public HashMap<String, AbstractTestResult> getAssumptions() {
 		return this.assumptions;
 	}
 

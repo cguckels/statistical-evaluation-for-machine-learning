@@ -19,38 +19,39 @@ package de.tudarmstadt.tk.statistics;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Representation of a statistic test allowing to print the results or use them further
+ * Representation of a statistic test allowing to print the results or use them
+ * further
+ * 
  * @author Guckelsberger, Schulz
  */
-public class TestResult extends AbstractTestResult{
-	
+public class TestResult extends AbstractTestResult {
+
 	private double pValue;
 	private double statistic;
-	
+
 	public TestResult(String method, HashMap<String, Double> parameter, double pValue, double statistic) {
 		super(method, parameter);
-		this.pValue=pValue;
-		this.statistic=statistic;
+		this.pValue = pValue;
+		this.statistic = statistic;
 	}
-	
-	public TestResult(TestResult r){
-		super(r.method,new HashMap<String,Double>(r.parameter));
-		this.pValue=r.pValue;
-		this.statistic=r.statistic;
-		if(r.assumptions!=null){
-			this.assumptions=(HashMap<String, AbstractTestResult>) r.assumptions.clone();
+
+	public TestResult(TestResult r) {
+		super(r.method, new HashMap<String, Double>(r.parameter));
+		this.pValue = r.pValue;
+		this.statistic = r.statistic;
+		if (r.assumptions != null) {
+			this.assumptions = (HashMap<String, AbstractTestResult>) r.assumptions.clone();
 		}
-		this.statisticType=r.getStatisticType();
+		this.statisticType = r.getStatisticType();
 
 	}
-	
+
 	public double getpValue() {
 		return pValue;
 	}
@@ -58,27 +59,27 @@ public class TestResult extends AbstractTestResult{
 	public double getStatistic() {
 		return statistic;
 	}
-	
+
 	/**
 	 * Prints the test results in a human-friendly way
 	 */
-	public String toString(){
-		
-		String params="";
+	public String toString() {
+
+		String params = "";
 		Iterator<Entry<String, Double>> it = this.parameter.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry<String,Double> pair = it.next();
-	        params += String.format("%s=%g\n",pair.getKey(),pair.getValue());
-	    }
-		
-	    String str;
-	    if(this.parameter.entrySet().size()!=0){
+		while (it.hasNext()) {
+			Map.Entry<String, Double> pair = it.next();
+			params += String.format("%s=%g\n", pair.getKey(), pair.getValue());
+		}
+
+		String str;
+		if (this.parameter.entrySet().size() != 0) {
 			str = String.format("Parameters:\n%s\nStatistic:\n%g\n\nP-Value:\n%g\n", params, this.statistic, this.pValue);
-	    }else{
+		} else {
 			str = String.format("Statistic:\n%g\n\nP-Value:\n%g\n", this.statistic, this.pValue);
-	    }
-	    return str;
-		
+		}
+		return str;
+
 	}
 
 }
