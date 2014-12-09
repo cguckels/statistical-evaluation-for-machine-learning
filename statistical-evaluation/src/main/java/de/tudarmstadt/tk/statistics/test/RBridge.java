@@ -67,7 +67,7 @@ public class RBridge {
 
 	private Rengine engine = null;
 
-	// Singleton: Only allow for one instance of RStatistics
+	// Singleton
 	private static volatile RBridge instance = null;
 
 	private static final Logger logger = LogManager.getLogger("Statistics");
