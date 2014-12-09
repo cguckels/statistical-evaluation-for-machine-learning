@@ -65,6 +65,7 @@ public class StatsConfig {
 	private HashMap<String, Double> significanceLevels = null;
 	private int selectBestN;
 	private String selectByMeasure;
+	private String fixIndependentVariable;
 	
 	public static StatsConfig getInstance(String filePath) {
 		if (instance == null) {
@@ -187,6 +188,16 @@ public class StatsConfig {
 				          }
 		        	  }
 		          }
+		          else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("fixIndependentVariable")) {
+		        	  event = eventReader.nextEvent();
+		        	  String f = event.asCharacters().getData();
+		        	  
+		        	  if(StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.contains(f)){
+			        	  fixIndependentVariable=f;
+			        	  continue;
+		        	  }
+		        	  throw new IllegalArgumentException(f); 
+		          }
 		      }	
 		      
 	    }catch(IllegalArgumentException e){
@@ -223,5 +234,9 @@ public class StatsConfig {
 	public HashMap<String, Double> getSignificanceLevels() {
 		return significanceLevels;
 	}
-	
+
+	public String getFixIndependentVariable() {
+		return fixIndependentVariable;
+	}
+
 }

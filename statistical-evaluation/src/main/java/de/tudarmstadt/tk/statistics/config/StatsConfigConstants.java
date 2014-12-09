@@ -30,6 +30,11 @@ import java.util.HashMap;
  */
 public abstract class StatsConfigConstants {
 
+	public static final ArrayList<String> INDEPENDENT_VARIABLES_VALUES = new ArrayList<String>(){{
+		add("Classifier");
+		add("FeatureSet");
+	}};
+	
 	public static final ArrayList<String> CORRECTION_VALUES = new ArrayList<String>(){{
 		add("bonferroni");
 		add("holm");

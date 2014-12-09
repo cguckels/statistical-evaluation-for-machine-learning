@@ -46,6 +46,7 @@
                                        </xs:sequence>
                                  </xs:complexType>
                            </xs:element>
+                           <xs:element name="fixIndependentVariable" type="xs:string"></xs:element>
                      </xs:sequence>
                </xs:complexType>
          </xs:element>

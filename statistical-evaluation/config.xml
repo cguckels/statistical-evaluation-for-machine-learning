@@ -61,4 +61,5 @@
 	<count>10</count>
 	<measure>Weighted F-Measure</measure>
 </selectBest>
+<fixIndependentVariable>FeatureSet</fixIndependentVariable>
 </configuration>
