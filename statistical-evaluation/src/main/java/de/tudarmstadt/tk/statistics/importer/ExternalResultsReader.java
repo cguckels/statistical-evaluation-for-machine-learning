@@ -47,8 +47,13 @@ import java.util.Map.Entry;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.logging.log4j.*;
 
+import de.tudarmstadt.tk.mugc.prototype.io.dataReaders.CSVReader;
+import de.tudarmstadt.tk.mugc.prototype.rstats.ExternalResults;
+import de.tudarmstadt.tk.mugc.prototype.rstats.ExternalResultsReader;
 import de.tudarmstadt.tk.statistics.config.ReportTypes;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.helper.Helpers;
@@ -218,6 +223,158 @@ public class ExternalResultsReader{
 		logger.log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.",outFileName));
 	}
 
+	public static void readMUGCCV(String filePath)
+	{
+		HashMap<String,Double> aggregatedMeasures = new HashMap<>();
+		
+		String outFileName = "AggregatedTrainTest.csv";
+		
+		Logger.getLogger(ExternalResultsReader.class).log(Level.INFO, String.format("Importing data from directory %s.",filePath));
+
+		// Method requires input directory. Check this condition.
+		File directory = new File(filePath);
+		if (directory.isDirectory()) {
+			System.err.println("Please specify a file. Aborting.");
+			return;
+		}
+
+		//Empty previous output file, if there was one
+		File outputFile = new File(directory.getParentFile(),outFileName);
+        if (outputFile.exists()){
+        	outputFile.delete();
+        }  
+		try {
+			String header = "Train;Test;Classifier;FeatureSet;Measure;Value";
+
+			PrintWriter out = new PrintWriter(new FileWriter(outputFile, true));
+			out.println(header);
+			out.close();
+		} catch (IOException e) {
+			System.err.println("Error while writing aggregated Train-Test file.");
+			e.printStackTrace();
+		}
+		
+		ArrayList<String> outputRows = new ArrayList<String>();
+
+		// iterate all rows
+		ArrayList<String[]> inputRowsFirstFile = new ArrayList<>();
+		try {
+			inputRowsFirstFile = CSVReader.parseReportData(filePath);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+
+		// first: order by train set
+		ArrayList<ExternalResults> extResults = new ArrayList<>();
+
+		for (int i = 0; i < inputRowsFirstFile.size(); i++) {
+			ExternalResults results = new ExternalResults();
+			
+			// identify current train/test split
+			String[] datasetNames = inputRowsFirstFile.get(i)[0].split(",");
+			results.trainSetName = datasetNames[0].replace("CV: ","").replace(" ","");
+
+			// set classifier name
+			results.classifierParameters = inputRowsFirstFile.get(i)[1];
+			
+			// read feature set
+			results.featureSetName = inputRowsFirstFile.get(i)[2];
+			
+			// read classification results
+			results.recall = Double.parseDouble(inputRowsFirstFile.get(i)[3]);
+			results.fMeasure= Double.parseDouble(inputRowsFirstFile.get(i)[4]);
+			results.precision= Double.parseDouble(inputRowsFirstFile.get(i)[5]);
+			results.accuracy= Double.parseDouble(inputRowsFirstFile.get(i)[10])/100;
+
+			extResults.add(results);
+		}
+		
+		HashMap<String,ArrayList<ExternalResults>> extResultsByTrainTestFeature = new HashMap<>();
+
+		// order by test set
+		for(ExternalResults result : extResults)
+		{
+			String IdKey = result.trainSetName + result.testSetName + result.featureSetName;
+			
+			if(extResultsByTrainTestFeature.containsKey(IdKey))
+			{
+				extResultsByTrainTestFeature.get(IdKey).add(result);
+			}
+			else
+			{
+				extResultsByTrainTestFeature.put(IdKey, new ArrayList<ExternalResults>());
+				extResultsByTrainTestFeature.get(IdKey).add(result);
+			}
+		}
+		
+		ArrayList<ExternalResults> aggregatedResults = new ArrayList<>();
+		
+		// aggregate results or keep as are
+		for(Entry<String,ArrayList<ExternalResults>> trainTestSplit : extResultsByTrainTestFeature.entrySet())
+		{
+			ExternalResults aggrResult = new ExternalResults();
+			
+			double recall = 0;
+			double fMeasure = 0;
+			double precision = 0;
+			double accuracy = 0;
+			int nrClassifiers = 0;
+			
+			// for all entries that are from the same train/test split and use the same feature set -> aggregate results
+			for(ExternalResults result : trainTestSplit.getValue())
+			{
+				aggrResult.testSetName = result.testSetName;
+				aggrResult.trainSetName = result.trainSetName;
+				aggrResult.classifierParameters = result.classifierParameters;
+				aggrResult.featureSetName = result.featureSetName;
+				
+				recall += result.recall;
+				fMeasure += result.fMeasure;
+				precision+= result.precision;
+				accuracy+= result.accuracy;
+				nrClassifiers++;
+			}
+			
+			aggrResult.accuracy = (accuracy / nrClassifiers);
+			aggrResult.fMeasure = (fMeasure / nrClassifiers);
+			aggrResult.recall = (recall / nrClassifiers);
+			aggrResult.precision = (precision / nrClassifiers);
+			
+			aggregatedResults.add(aggrResult);
+		}
+			
+			// write values of measure
+			for(ExternalResults result : aggregatedResults)
+			{
+				String outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Percent Correct", result.accuracy);
+				outputRows.add(outputRow);
+				
+				outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted Precision", result.precision);
+				outputRows.add(outputRow);
+
+				outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted Recall", result.recall);
+				outputRows.add(outputRow);
+
+				outputRow = String.format("%s;%s;%s;%s;%s;%s", result.trainSetName, result.testSetName, "0", result.featureSetName, "Weighted F-Measure", result.fMeasure);
+				outputRows.add(outputRow);
+
+			}
+			
+		// Write aggregated data to a new file
+		try {
+			PrintWriter out = new PrintWriter(new FileWriter(outputFile, true));
+			for (String s : outputRows) {
+				out.println(s);
+			}
+			out.close();
+		} catch (IOException e) {
+			System.err.println("Error while writing aggregated Train-Test file.");
+			e.printStackTrace();
+		}
+	
+		Logger.getLogger(ExternalResultsReader.class).log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.",outFileName));
+	}
+	
 	public static void readAxelTrainTest(String pathToDirectory) {
 		Locale.setDefault(Locale.ENGLISH);
 				
