@@ -31,12 +31,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,16 +44,12 @@ import java.util.Map.Entry;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import de.tudarmstadt.tk.mugc.prototype.io.dataReaders.CSVReader;
-import de.tudarmstadt.tk.mugc.prototype.rstats.ExternalResults;
-import de.tudarmstadt.tk.mugc.prototype.rstats.ExternalResultsReader;
 import de.tudarmstadt.tk.statistics.config.ReportTypes;
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
-import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.helper.Helpers;
 import de.tudarmstadt.tk.statistics.report.EvaluationResults;
 import de.tudarmstadt.tk.statistics.report.EvaluationResultsWriter;
@@ -230,7 +223,7 @@ public class ExternalResultsReader{
 		
 		String outFileName = "AggregatedTrainTest.csv";
 		
-		Logger.getLogger(ExternalResultsReader.class).log(Level.INFO, String.format("Importing data from directory %s.",filePath));
+		logger.log(Level.INFO, String.format("Importing data from directory %s.",filePath));
 
 		// Method requires input directory. Check this condition.
 		File directory = new File(filePath);
@@ -260,7 +253,7 @@ public class ExternalResultsReader{
 		// iterate all rows
 		ArrayList<String[]> inputRowsFirstFile = new ArrayList<>();
 		try {
-			inputRowsFirstFile = CSVReader.parseReportData(filePath);
+			inputRowsFirstFile = CSVReader.parseSampleData(filePath);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
@@ -373,7 +366,7 @@ public class ExternalResultsReader{
 			e.printStackTrace();
 		}
 	
-		Logger.getLogger(ExternalResultsReader.class).log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.",outFileName));
+		logger.log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.",outFileName));
 	}
 	
 	public static void readAxelTrainTest(String pathToDirectory) {

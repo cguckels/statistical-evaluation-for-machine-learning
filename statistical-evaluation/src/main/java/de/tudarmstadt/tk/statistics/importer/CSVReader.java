@@ -30,12 +30,7 @@ import java.util.ArrayList;
  * simple reader for tweets saved in csv files<br>
  * The {@link TweetReader} for the pipeline implements this functionality.
  * 
-<<<<<<< HEAD:statistical-evaluation/src.main.java/de/tudarmstadt/tk/statistics/importer/CSVReader.java
- * @author Karolus
-=======
  * @author Karolus, Schulz
->>>>>>> 79f8397ddd2a76df77cead9f4725e1ff5b2ee2dd:statistical-evaluation/src.main.java/de/tudarmstadt/tk/statistics/importer/mugc/CSVReader.java
- *
  */
 public class CSVReader {
 
