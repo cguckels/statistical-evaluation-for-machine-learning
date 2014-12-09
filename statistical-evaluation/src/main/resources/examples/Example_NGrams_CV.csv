@@ -1,0 +1,9 @@
+Train;Test;Classifier;FeatureSet;Measure;Value
+Boston2C;Boston2C;0;[ngramUseTopKBaseline, 50, ngramMinNBaseline, 2, ngramMaxNBaseline, 2];Percent Correct;0.8361111111111111
+Boston2C;Boston2C;0;[ngramUseTopKBaseline, 50, ngramMinNBaseline, 2, ngramMaxNBaseline, 2];Weighted Precision;0.8180675157268296
+Boston2C;Boston2C;0;[ngramUseTopKBaseline, 50, ngramMinNBaseline, 2, ngramMaxNBaseline, 2];Weighted Recall;0.836111111111111
+Boston2C;Boston2C;0;[ngramUseTopKBaseline, 50, ngramMinNBaseline, 2, ngramMaxNBaseline, 2];Weighted F-Measure;0.7996603691211762
+Boston2C;Boston2C;0;[ngramUseTopK, 50, ngramMinN, 3, ngramMaxN, 3, ngramUseTopKBaseline, 50, ngramMinNBaseline, 2, ngramMaxNBaseline, 2];Percent Correct;0.8333333333333335
+Boston2C;Boston2C;0;[ngramUseTopK, 50, ngramMinN, 3, ngramMaxN, 3, ngramUseTopKBaseline, 50, ngramMinNBaseline, 2, ngramMaxNBaseline, 2];Weighted Precision;0.8122365918168614
+Boston2C;Boston2C;0;[ngramUseTopK, 50, ngramMinN, 3, ngramMaxN, 3, ngramUseTopKBaseline, 50, ngramMinNBaseline, 2, ngramMaxNBaseline, 2];Weighted Recall;0.8333333333333333
+Boston2C;Boston2C;0;[ngramUseTopK, 50, ngramMinN, 3, ngramMaxN, 3, ngramUseTopKBaseline, 50, ngramMinNBaseline, 2, ngramMaxNBaseline, 2];Weighted F-Measure;0.7971789127915798
