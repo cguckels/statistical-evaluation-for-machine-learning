@@ -1,5 +1,6 @@
 package de.tudarmstadt.tk.statistics.test;
 
+
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
@@ -19,12 +20,9 @@ package de.tudarmstadt.tk.statistics.test;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,13 +35,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.graph.DefaultEdge;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
-import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.helper.ImprovedDirectedGraph;
 import de.tudarmstadt.tk.statistics.report.EvaluationResults;
 
@@ -80,7 +73,7 @@ public class Statistics {
 
 		EvaluationResults evalResults = new EvaluationResults();
 		evalResults.setSampleData(sampleData);
-		evalResults.setSignificanceLevel(config.getSignificance_low(), config.getSignificance_medium(), config.getSignificance_high());
+		evalResults.setSignificanceLevel(config.getSignificanceLevels().get("low"), config.getSignificanceLevels().get("medium"), config.getSignificanceLevels().get("high") );
 		evalResults.setIsBaselineEvaluation(sampleData.isBaselineEvaluation());
 		int nModels = 0;
 
@@ -134,7 +127,7 @@ public class Statistics {
 		// Perform evaluation on contingency matrix if appropriate test is
 		// provided and there are only two models to be evaluated on a single
 		// domain
-		String nonParametricContingency = config.getRequiredTests().get(StatsConfigConstants.TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE);
+		String nonParametricContingency = config.getRequiredTests().get("TwoSamplesNonParametricContingency");
 		if (!nonParametricContingency.isEmpty() && nModels == 2) {
 			int[][] contingency = sampleData.getContingencyMatrix();
 			// Only available if two models were evaluated on a single domain
@@ -177,8 +170,8 @@ public class Statistics {
 		RBridge stats = RBridge.getInstance(false);
 
 		// Get required tests for two samples on one/multiple domains
-		String testParametric = requiredTests.get(StatsConfigConstants.TWO_SAMPLES_PARAMETRIC);
-		String testNonParametric = requiredTests.get(StatsConfigConstants.TWO_SAMPLES_NONPARAMETRIC);
+		String testParametric = requiredTests.get("TwoSamplesParametric");
+		String testNonParametric = requiredTests.get("TwoSamplesNonParametric");
 
 		evalResults.setParametricTest(testParametric);
 		evalResults.setNonParametricTest(testNonParametric);
@@ -218,17 +211,17 @@ public class Statistics {
 
 		RBridge stats = RBridge.getInstance(true);
 		// Get required tests for >2 samples
-		String testParametric = requiredTests.get(StatsConfigConstants.MULTIPLE_SAMPLES_PARAMETRIC);
-		String testNonParametric = requiredTests.get(StatsConfigConstants.MULTIPLE_SAMPLES_NONPARAMETRIC);
+		String testParametric = requiredTests.get("MultipleSamplesParametric");
+		String testNonParametric = requiredTests.get("MultipleSamplesNonParametric");
 
 		String testPostHocParametric = null;
 		String testPostHocNonParametric = null;
 		if (!isBaselineEvaluation) {
-			testPostHocParametric = requiredTests.get(StatsConfigConstants.MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC);
-			testPostHocNonParametric = requiredTests.get(StatsConfigConstants.MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC);
+			testPostHocParametric = requiredTests.get("MultipleSamplesParametricPosthoc");
+			testPostHocNonParametric = requiredTests.get("MultipleSamplesNonParametricPostHoc");
 		} else {
-			testPostHocParametric = requiredTests.get(StatsConfigConstants.MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_BASELINE);
-			testPostHocNonParametric = requiredTests.get(StatsConfigConstants.MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_BASELINE);
+			testPostHocParametric = requiredTests.get("MultipleSamplesParametricPosthocBaseline");
+			testPostHocNonParametric = requiredTests.get("MultipleSamplesNonParametricPostHocBaseline");
 		}
 
 		evalResults.setParametricTest(testParametric);
@@ -371,7 +364,7 @@ public class Statistics {
 
 		for (int i = 0; i < pValues.length; i++) {
 			for (int j = 0; j <= i; j++) {
-				if (pValues[i][j] <= config.getSignificance_medium()) {
+				if (pValues[i][j] <= config.getSignificanceLevels().get("medium")) {
 					if (averageSamplesPerModel.get(i + 1) < averageSamplesPerModel.get(j)) {
 						directedGraph.addEdge(i + 1, j);
 					} else {

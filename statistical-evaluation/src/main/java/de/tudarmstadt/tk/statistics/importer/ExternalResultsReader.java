@@ -65,9 +65,7 @@ public class ExternalResultsReader{
     private static final Logger logger = LogManager.getLogger("Statistics");
 	
 	public static void readMUGCTrainTest(String filePath)
-	{
-		HashMap<String,Double> aggregatedMeasures = new HashMap<>();
-		
+	{		
 		String outFileName = "AggregatedTrainTest.csv";
 		
 		logger.log(Level.INFO, String.format("Importing data from directory %s.",filePath));
@@ -218,9 +216,7 @@ public class ExternalResultsReader{
 	}
 
 	public static void readMUGCCV(String filePath)
-	{
-		HashMap<String,Double> aggregatedMeasures = new HashMap<>();
-		
+	{		
 		String outFileName = "AggregatedTrainTest.csv";
 		
 		logger.log(Level.INFO, String.format("Importing data from directory %s.",filePath));
@@ -539,12 +535,12 @@ public class ExternalResultsReader{
 							// get and aggregate values
 							for (int j = 0; j < measures.length; j++) {
 								if (j == 0) {
-									double currentValue = ((double[]) values.get(i).get("aggregatedMeasureValues"))[j];
+									//double currentValue = ((double[]) values.get(i).get("aggregatedMeasureValues"))[j];
 									double valueInFile = Double.parseDouble(inputCells[j + 16]) / 100;
 
 									((double[]) values.get(i).get("aggregatedMeasureValues"))[j] += valueInFile;
 								} else {
-									double currentValue = ((double[]) values.get(i).get("aggregatedMeasureValues"))[j];
+									//double currentValue = ((double[]) values.get(i).get("aggregatedMeasureValues"))[j];
 									double valueInFile = Double.parseDouble(inputCells[j + 16]);
 									((double[]) values.get(i).get("aggregatedMeasureValues"))[j] += valueInFile;
 								}
@@ -838,6 +834,7 @@ public class ExternalResultsReader{
 				data.add(tokens);
 				if (nColumns != tokens.length) {
 					System.err.println(".csv file corrup: number of columns not same for each row.");
+					reader.close();
 					return null;
 				}
 			}

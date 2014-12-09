@@ -1078,8 +1078,6 @@ public class RBridge {
 	 */
 	public double[][] adjustP(PairwiseTestResult result, String method) {
 
-		PairwiseTestResult adjusted = null;
-
 		// Extract p-values and flatten array, in order to pass to R
 		double[] v = flattenArray(result.getpValue());
 

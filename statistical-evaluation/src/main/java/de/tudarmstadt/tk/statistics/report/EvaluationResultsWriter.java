@@ -1092,7 +1092,6 @@ public class EvaluationResultsWriter {
 
 		int nModels = evalResults.getSampleData().getModelMetadata().size();
 		ArrayList<String> measures = evalResults.getMeasures();
-		int nSamples = evalResults.getSampleData().getSamples().get(measures.get(0)).get(0).size();
 		String ref = "tbl:models";
 
 		// Separate training/testing datasets

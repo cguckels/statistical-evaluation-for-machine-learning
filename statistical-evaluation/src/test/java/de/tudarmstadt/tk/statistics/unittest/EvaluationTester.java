@@ -20,15 +20,15 @@ package de.tudarmstadt.tk.statistics.unittest;
  */
 import org.junit.Test;
 
+import de.tudarmstadt.tk.statistics.config.StatsConfig;
+
 public class EvaluationTester {
 	
 	@Test
 	public void testCVInput(){
-		/*
-		DOMParser parser = new DOMParser();
-		parser.parse(new URL("config.xml"));
-		XMLDocument doc = parser.getDocument();*/
 
+		StatsConfig config = StatsConfig.getInstance("config.xml");
+		
 	}
 
 }

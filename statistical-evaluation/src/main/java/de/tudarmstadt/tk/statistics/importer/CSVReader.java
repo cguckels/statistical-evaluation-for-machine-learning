@@ -55,6 +55,7 @@ public class CSVReader {
 				data.add(tokens);
 				if (nColumns != tokens.length) {
 					System.err.println(".csv file corrup: number of columns not same for each row.");
+					reader.close();
 					return null;
 				}
 			}

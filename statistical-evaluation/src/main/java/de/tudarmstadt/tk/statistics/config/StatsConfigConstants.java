@@ -19,47 +19,54 @@ package de.tudarmstadt.tk.statistics.config;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Comprises allowed values (e.g. available performance measures, statistical
- * tests, etc.) for the stats_setup config file
+ * tests, etc.) for the stats setup config file
  * 
  * @author Guckelsberger, Schulz
  */
 public abstract class StatsConfigConstants {
 
-	public static final String MEASURES = "measures";
-	public static final String MEASURE = "measure";
-	public static final String TESTS = "tests";
-	public static final String CORRECTIONS = "corrections";
-	public static final String CORRECTION = "correction";
-	public static final String TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE = "two samples, non-parametric with contingency table";
-	public static final String TWO_SAMPLES_NONPARAMETRIC = "two samples, non-parametric";
-	public static final String TWO_SAMPLES_PARAMETRIC = "two samples, parametric";
-	public static final String MULTIPLE_SAMPLES_PARAMETRIC = "multiple samples, parametric";
-	public static final String MULTIPLE_SAMPLES_NONPARAMETRIC = "multiple samples, non-parametric";
-	public static final String MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC = "multiple samples, parametric, post-hoc";
-	public static final String MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC = "multiple samples, non-parametric, post-hoc";
-	public static final String MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_BASELINE = "multiple samples, parametric, post-hoc baseline";
-	public static final String MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_BASELINE = "multiple samples, non-parametric, post-hoc baseline";
-	public static final String SIGNIFICANCE_LOW = "low significance";
-	public static final String SIGNIFICANCE_MEDIUM = "medium significance";
-	public static final String SIGNIFICANCE_HIGH = "high significance";
-	public static final String SELECT_BEST_N = "select best n";
-	public static final String SELECT_BEST_N_BY_MEASURE = "select best n by measure";
+	public static final ArrayList<String> CORRECTION_VALUES = new ArrayList<String>(){{
+		add("bonferroni");
+		add("holm");
+		add("hochberg");
+		add("hommel");
+		add("BH");
+		add("BY");
+	}};
 	
-	public static final String[] CORRECTION_VALUES = new String[]{"bonferroni", "holm", "hochberg","hommel","BH","BY"};
-	public static final String[] MEASURE_VALUES = new String[]{"Weighted Precision", "Weighted Recall", "Weighted F-Measure"};
-	public static final String[] TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE_VALUES = new String[]{"McNemar"};
-	public static final String[] TWO_SAMPLES_PARAMETRIC_VALUES = new String[]{"DependentT"};
-	public static final String[] TWO_SAMPLES_NONPARAMETRIC_VALUES = new String[]{"WilcoxonSignedRank"};
-	public static final String[] MULTIPLE_SAMPLES_PARAMETRIC_VALUES = new String[]{"RepeatedMeasuresOneWayANOVA"};
-	public static final String[] MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_VALUES = new String[]{"PairwiseDependentT","Tukey"};
-	public static final String[] MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_BASELINE_VALUES = new String[]{"Dunett"};
-	public static final String[] MULTIPLE_SAMPLES_NONPARAMETRIC_VALUES = new String[]{"Friedman"};
-	public static final String[] MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_VALUES = new String[]{"Nemenyi"};
-	public static final String[] MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_BASELINE_VALUES = new String[]{"PairwiseWilcoxonSignedRank"};
+	public static final ArrayList<String> SIGNIFICANCE_LEVEL_VALUES = new ArrayList<String>(){{
+		add("low");
+		add("medium");
+		add("high");
+	}};
+	
+	public static final ArrayList<String> TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE_VALUES = new ArrayList<String>(){{add("McNemar");}};
+	public static final ArrayList<String> TWO_SAMPLES_PARAMETRIC_VALUES = new ArrayList<String>(){{add("DependentT");}};
+	public static final ArrayList<String> TWO_SAMPLES_NONPARAMETRIC_VALUES = new ArrayList<String>(){{add("WilcoxonSignedRank");}};
+	public static final ArrayList<String> MULTIPLE_SAMPLES_PARAMETRIC_VALUES = new ArrayList<String>(){{add("RepeatedMeasuresOneWayANOVA");}};
+	public static final ArrayList<String> MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_VALUES = new ArrayList<String>(){{add("PairwiseDependentT"); add("Tukey");}};
+	public static final ArrayList<String> MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_BASELINE_VALUES = new ArrayList<String>(){{add("Dunett");}};
+	public static final ArrayList<String> MULTIPLE_SAMPLES_NONPARAMETRIC_VALUES = new ArrayList<String>(){{add("Friedman");}};
+	public static final ArrayList<String> MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_VALUES = new ArrayList<String>(){{add("Nemenyi");}};
+	public static final ArrayList<String> MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_BASELINE_VALUES = new ArrayList<String>(){{add("PairwiseWilcoxonSignedRank");}};
+	
+	public static final HashMap<String,ArrayList<String>> TESTS = new HashMap<String,ArrayList<String>>(){{
+		put("TwoSamplesNonParametricContingency",TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE_VALUES);
+		put("TwoSamplesParametric",TWO_SAMPLES_PARAMETRIC_VALUES);
+		put("TwoSamplesNonParametric",TWO_SAMPLES_NONPARAMETRIC_VALUES);
+		put("MultipleSamplesParametric",MULTIPLE_SAMPLES_PARAMETRIC_VALUES);
+		put("MultipleSamplesNonParametric",MULTIPLE_SAMPLES_NONPARAMETRIC_VALUES);
+		put("MultipleSamplesParametricPosthoc",MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_VALUES);
+		put("MultipleSamplesNonParametricPostHoc",MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_VALUES);
+		put("MultipleSamplesParametricPosthocBaseline",MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_BASELINE_VALUES);
+		put("MultipleSamplesNonParametricPostHocBaseline",MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_BASELINE_VALUES);};
+	};
+
 	public static final HashMap<String,String> PRETTY_PRINT_METHODS = new HashMap<String,String>(){
 						{put("WilcoxonSignedRank","Wilcoxon signed-rank test"); 
 						put("DependentT","dependent t-test"); 

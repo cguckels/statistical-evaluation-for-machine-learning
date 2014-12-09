@@ -17,20 +17,31 @@ package de.tudarmstadt.tk.statistics.config;
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.xml.XMLConstants;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import org.xml.sax.SAXException;
 
 import de.tudarmstadt.tk.statistics.test.RBridge;
 
@@ -47,12 +58,11 @@ public class StatsConfig {
 	private static volatile StatsConfig instance = null;
 	
     private static final Logger logger = LogManager.getLogger("Statistics");
+    private static String SCHEMA_PATH = "config.xsd";
 	
 	private	HashMap<String,String> requiredTests = null;
 	private	List<String> requiredCorrections = null;
-	private double significance_low=1;
-	private double significance_medium=1;
-	private double significance_high=1;
+	private HashMap<String, Double> significanceLevels = null;
 	private int selectBestN;
 	private String selectByMeasure;
 	
@@ -69,127 +79,129 @@ public class StatsConfig {
 	
 	private StatsConfig(String pathToConfigFile) {
 
-		HashMap<String, Object> parameters;
-		try {
-			parameters = readParametersFromConfig(pathToConfigFile);
-			requiredTests = (HashMap<String, String>) parameters.get(StatsConfigConstants.TESTS);
-			requiredCorrections = (List<String>) parameters.get(StatsConfigConstants.CORRECTIONS);
-			significance_low = (double) parameters.get(StatsConfigConstants.SIGNIFICANCE_LOW);
-			significance_medium = (double) parameters.get(StatsConfigConstants.SIGNIFICANCE_MEDIUM);
-			significance_high = (double) parameters.get(StatsConfigConstants.SIGNIFICANCE_HIGH);
-			selectBestN = (int)parameters.get(StatsConfigConstants.SELECT_BEST_N);
-			selectByMeasure = (String)parameters.get(StatsConfigConstants.SELECT_BEST_N_BY_MEASURE);
-		} catch (FileNotFoundException e) {
-			logger.log(Level.ERROR, "Statistics config file not found.");
-			System.err.println("Statistics config file not found.");
-			e.printStackTrace();
-		} catch (JSONException e) {
-			logger.log(Level.ERROR, "Error while reading statistics config file.");
-			System.err.println("Error while reading statistics config file.");
-			e.printStackTrace();
-		}
+		this.parseXML(pathToConfigFile);
 		
 	}
-
+	
 	/**
-	 * Read statistics evaluation parameter from the (JSON) config file
-	 * 
-	 * @param pathToConfigFile
-	 *            path to the config file to use (including suffix .cfg)
-	 * @return a HashMap with the parameters from the config file
-	 * @throws JSONException
-	 * @throws FileNotFoundException
-	 * @see StatsConfigConstants
+	 * Validate and parse XML config file. Also check if file contains legal values for tests, p-value corrections and signficiance levels.
+	 * @param pathToConfigFile 
 	 */
-	public static HashMap<String, Object> readParametersFromConfig(String pathToConfigFile) throws FileNotFoundException, JSONException {
+	private void parseXML(String pathToConfigFile){
 
-		HashMap<String, Object> parameters = new HashMap<String, Object>();
-		JSONObject config = new JSONObject(new JSONTokener(new FileReader(pathToConfigFile)));
-		List<String> measures = getListFromConfigFile(config.getJSONArray(StatsConfigConstants.MEASURES), StatsConfigConstants.MEASURE, Arrays.asList(StatsConfigConstants.MEASURE_VALUES));
-		// List<String> measures =
-		// getMeasuresFromConfigFile(config.getJSONArray(StatsConfigConstants.MEASURES));
-		List<String> corrections = getListFromConfigFile(config.getJSONArray(StatsConfigConstants.CORRECTIONS), StatsConfigConstants.CORRECTION, Arrays.asList(StatsConfigConstants.CORRECTION_VALUES));
-		HashMap<String, String> tests = getTestsFromConfigFile(config.getJSONArray(StatsConfigConstants.TESTS));
+		 //Validate
+        XMLStreamReader reader;
+		try {
+			reader = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(pathToConfigFile));
 
-		parameters.put(StatsConfigConstants.SIGNIFICANCE_LOW, config.getDouble(StatsConfigConstants.SIGNIFICANCE_LOW));
-		parameters.put(StatsConfigConstants.SIGNIFICANCE_MEDIUM, config.getDouble(StatsConfigConstants.SIGNIFICANCE_MEDIUM));
-		parameters.put(StatsConfigConstants.SIGNIFICANCE_HIGH, config.getDouble(StatsConfigConstants.SIGNIFICANCE_HIGH));
+	        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+	        Schema schema = factory.newSchema(new File(SCHEMA_PATH));
 
-		parameters.put(StatsConfigConstants.MEASURES, measures);
-		parameters.put(StatsConfigConstants.CORRECTIONS, corrections);
-		parameters.put(StatsConfigConstants.TESTS, tests);
-
-		parameters.put(StatsConfigConstants.SELECT_BEST_N, config.getInt(StatsConfigConstants.SELECT_BEST_N));
-		parameters.put(StatsConfigConstants.SELECT_BEST_N_BY_MEASURE, config.getString(StatsConfigConstants.SELECT_BEST_N_BY_MEASURE));
-
-		// parameters.put(StatsConfigConstants.PARAMETRIC_AND_NONPARAMETRIC,
-		// config.get(StatsConfigConstants.PARAMETRIC_AND_NONPARAMETRIC));
-		return parameters;
-
-	}
-
-	/**
-	 * Fetches a list of values from a JSON array and returns them as an array
-	 * of type String
-	 * 
-	 * @param jsonArray
-	 *            The JSON array with the required entries
-	 * @param identifier
-	 *            The name of the JSON array with the requires entries
-	 * @param conformity
-	 *            A list of allowed values to check whether the JSON array
-	 *            entries conform
-	 * @return a List of type String containing the keys from the JSON array,
-	 *         conforming with the allowed values
-	 * @see StatsConfigConstants
-	 */
-	private static List<String> getListFromConfigFile(JSONArray jsonArray, String identifier, List<String> conformity) {
-		List<String> l = new ArrayList<String>();
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject jsonO;
-			try {
-				jsonO = jsonArray.getJSONObject(i);
-				String name = jsonO.getString(identifier);
-				if (conformity.contains(name)) {
-					l.add(name);
-				} else {
-					String error = String.format("%s '%s' from statistics config file not allowed!", identifier, name);
-					System.err.println(error);
-					logger.log(Level.ERROR, error);
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+	        Validator validator = schema.newValidator();
+	        validator.validate(new StAXSource(reader));
+	        
+		}catch(IllegalArgumentException e){
+			logger.log(Level.ERROR, "Statistics config file doesn't validate!");
+			System.err.println("Statistics config file doesn't validate!");
+			System.exit(1);
+		}catch (XMLStreamException	| FactoryConfigurationError | SAXException | IOException e1) {
+			logger.log(Level.ERROR, "Error while validating statistics config file.");
+			System.err.println("Error while validating statistics config file.");
+			System.exit(1);
 		}
-		return l;
-	}
 
-	/**
-	 * Retrieves the statistical tests defined in a JSON array as part of the
-	 * statistics config file
-	 * 
-	 * @param testArray
-	 *            The JSON array containing the test keys and valus
-	 * @return a HashMap with String-keys representing the test category (e.g.
-	 *         MULTIPLE_SAMPLES_SINGLE_DOMAIN_NONPARAMETRIC) and the respective
-	 *         test as String-value
-	 * @see StatsConfigConstants
-	 */
-	private static HashMap<String, String> getTestsFromConfigFile(JSONArray testArray) {
+		
+		//Parse
+		requiredTests = new HashMap<String,String>();
+		requiredCorrections = new ArrayList<String>();
+		significanceLevels = new HashMap<String, Double>();
+		
+	    XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+	    InputStream in;
+	    try {
+	    	in = new FileInputStream("config.xml");
+			XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
+			   
+		      while (eventReader.hasNext()) {
+		          XMLEvent event = eventReader.nextEvent();
 
-		HashMap<String, String> tests = new HashMap<String, String>();
-
-		for (int i = 0; i < testArray.length(); i++) {
-			try {
-				JSONObject entry = testArray.getJSONObject(i);
-				String key = JSONObject.getNames(entry)[0];
-				tests.put(key, entry.optString(key));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+		          if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("test")) {
+		        	  String c = null;
+		        	  String n = null;
+		        	  while(!(event.isEndElement() && event.asEndElement().getName().getLocalPart().equals("test"))){
+		        		  event = eventReader.nextEvent();
+				          if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("class")) {
+				        	  event = eventReader.nextEvent();
+				        	  c = event.asCharacters().getData();
+				          } else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("name")) {
+				        	  event = eventReader.nextEvent();
+				        	  n = event.asCharacters().getData();
+				          }
+		        	  }
+		        	  if(StatsConfigConstants.TESTS.containsKey(c)){
+		        		  if(StatsConfigConstants.TESTS.get(c).contains(n)){
+				        	  requiredTests.put(c, n);
+				        	  continue;
+		        		  }
+		        	  }
+		        	  throw new IllegalArgumentException(c + ", " + n); 
+		          }
+		          else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("significanceLevel")) {
+		        	  String l = null;
+		        	  double v = 1; 
+		        	  while(!(event.isEndElement() && event.asEndElement().getName().getLocalPart().equals("significanceLevel"))){
+		        		  event = eventReader.nextEvent();
+				          if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("level")) {
+				        	  event = eventReader.nextEvent();
+				        	  l = event.asCharacters().getData();
+				          }else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("value")) {
+				        	  event = eventReader.nextEvent();
+				        	  v = Double.parseDouble(event.asCharacters().getData());
+				          }
+		        	  }
+		        	  if(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.contains(l)){
+			        	  significanceLevels.put(l, v);
+			        	  continue;
+		        	  }
+		        	  throw new IllegalArgumentException(l); 
+		          }
+		          else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("pCorrection")) {
+		        	  event = eventReader.nextEvent();
+		        	  String pC = event.asCharacters().getData();
+		        	  
+		        	  if(StatsConfigConstants.CORRECTION_VALUES.contains(pC)){
+			        	  requiredCorrections.add(pC);
+			        	  continue;
+		        	  }
+		        	  throw new IllegalArgumentException(pC); 
+		          }
+		          else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("selectBest")) {
+		        	  while(!(event.isEndElement() && event.asEndElement().getName().getLocalPart().equals("selectBest"))){
+		        		  event = eventReader.nextEvent();
+				          if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("count")) {
+				        	  event = eventReader.nextEvent();
+				        	  selectBestN = Integer.parseInt(event.asCharacters().getData());
+				          }else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("measure")) {
+				        	  event = eventReader.nextEvent();
+				        	  selectByMeasure = event.asCharacters().getData();
+				          }
+		        	  }
+		          }
+		      }	
+		      
+	    }catch(IllegalArgumentException e){
+	    	logger.log(Level.ERROR, "Illegal argument in config XML: " + e.getMessage());
+			System.err.println("Illegal argument in config XML: " + e.getMessage());
+			System.exit(1);
+	    } catch (FileNotFoundException e) {
+		 	logger.log(Level.ERROR, "Statistics config file not found.");
+			System.err.println("Statistics config file not found.");
+			System.exit(1);
+		} catch (XMLStreamException e) {
+		 	logger.log(Level.ERROR, "Error while parsing statistics config file.");
+			System.err.println("Error while parsing statistics config file.");
+			System.exit(1);
 		}
-		return tests;
 	}
 
 	public HashMap<String, String> getRequiredTests() {
@@ -200,24 +212,16 @@ public class StatsConfig {
 		return requiredCorrections;
 	}
 
-	public double getSignificance_low() {
-		return significance_low;
-	}
-
-	public double getSignificance_medium() {
-		return significance_medium;
-	}
-
-	public double getSignificance_high() {
-		return significance_high;
-	}
-
 	public int getSelectBestN() {
 		return selectBestN;
 	}
 
 	public String getSelectByMeasure() {
 		return selectByMeasure;
+	}
+
+	public HashMap<String, Double> getSignificanceLevels() {
+		return significanceLevels;
 	}
 	
 }
