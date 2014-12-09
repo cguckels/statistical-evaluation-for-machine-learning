@@ -1,0 +1,64 @@
+<configuration>
+<tests>
+	<test>
+		<class>TwoSamplesParametric</class>
+		<name>DependentT</name>
+	</test>
+	<test>
+		<class>TwoSamplesNonParametric</class>
+		<name>WilcoxonSignedRank</name>
+	</test>
+	<test>
+		<class>TwoSamplesNonParametricContingency</class>
+		<name>McNemar</name>
+	</test>
+	<test>
+		<class>MultipleSamplesParametric</class>
+		<name>RepeatedMeasuresOneWayANOVA</name>
+	</test>
+	<test>
+		<class>MultipleSamplesNonParametric</class>
+		<name>Friedman</name>
+	</test>
+	<test>
+		<class>MultipleSamplesParametricPosthoc</class>
+		<name>Tukey</name>
+	</test>
+	<test>
+		<class>MultipleSamplesNonParametricPostHoc</class>
+		<name>Nemenyi</name>
+	</test>
+		<test>
+		<class>MultipleSamplesParametricPosthocBaseline</class>
+		<name>Dunett</name>
+	</test>
+	<test>
+		<class>MultipleSamplesNonParametricPostHocBaseline</class>
+		<name>PairwiseWilcoxonSignedRank</name>
+	</test>
+</tests>
+<pCorrections>
+	<pCorrection>bonferroni</pCorrection>
+	<pCorrection>holm</pCorrection>
+	<pCorrection>hochberg</pCorrection>
+	<pCorrection>hommel</pCorrection>
+</pCorrections>
+<significanceLevels>
+	<significanceLevel>
+		<level>low</level>
+		<value>0.1</value>
+	</significanceLevel>
+		<significanceLevel>
+		<level>medium</level>
+		<value>0.05</value>
+	</significanceLevel>
+		<significanceLevel>
+		<level>high</level>
+		<value>0.01</value>
+	</significanceLevel>
+</significanceLevels>
+<selectBest>
+	<count>10</count>
+	<measure>Weighted F-Measure</measure>
+</selectBest>
+</configuration>
