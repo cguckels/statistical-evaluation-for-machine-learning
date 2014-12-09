@@ -1,4 +1,4 @@
-package de.tudarmstadt.tk.statistics.importer.mugc;
+package de.tudarmstadt.tk.statistics.importer;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +16,7 @@ import java.util.Vector;
  * simple reader for tweets saved in csv files<br>
  * The {@link TweetReader} for the pipeline implements this functionality.
  * 
- * @author Jakob
+ * @author Karolus
  *
  */
 public class CSVReader {

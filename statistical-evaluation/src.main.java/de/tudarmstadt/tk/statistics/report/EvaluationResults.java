@@ -1,9 +1,9 @@
-package de.tudarmstadt.tk.statistics;
+package de.tudarmstadt.tk.statistics.report;
 
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import de.tudarmstadt.tk.statistics.AbstractTestResult;
+import de.tudarmstadt.tk.statistics.SampleData;
+
 /**
  * Container to store the results of a statistical evaluation, i.e. the p-values, parameters and statistics of the individual tests, the names of the data sets, the metadata of the evaluated models etc.
  * @author Guckelsberger, Schulz
@@ -40,7 +43,7 @@ public class EvaluationResults implements java.io.Serializable{
 	private double significance_high = 1;
 	
 	//Entire sample information for a particular pipeline run
-	private StatisticalEvaluationData sampleData;
+	private SampleData sampleData;
 
 	//(Post-hoc) test results
 	private HashMap<String,Pair<String,AbstractTestResult>> parametricTestResults;
@@ -136,11 +139,11 @@ public class EvaluationResults implements java.io.Serializable{
 		return significance_high;
 	}
 	
-	public StatisticalEvaluationData getSampleData() {
+	public SampleData getSampleData() {
 		return sampleData;
 	}
 
-	public void setSampleData(StatisticalEvaluationData sampleData) {
+	public void setSampleData(SampleData sampleData) {
 		this.sampleData = sampleData;
 	}
 	

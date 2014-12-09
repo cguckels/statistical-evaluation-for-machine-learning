@@ -3,7 +3,7 @@ package de.tudarmstadt.tk.statistics;
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,14 +46,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
+import de.tudarmstadt.tk.statistics.helper.ImprovedDirectedGraph;
+import de.tudarmstadt.tk.statistics.report.EvaluationResults;
+
 /**
+ * Class to perform statistical evaluation of machine-learning sample data
  * @author Guckelsberger, Schulz
  */
 public class Statistics {
 	
     private static final Logger logger = LogManager.getLogger("Statistics");
-
-	
 	private	HashMap<String,String> requiredTests = null;
 	private	List<String> requiredCorrections = null;
 	private	boolean parametricAndNonParametric = true; //By default.
@@ -88,7 +91,7 @@ public class Statistics {
 	 * @see de.tudarmstadt.tk.mugc.prototype.reports.AbstractPipelineReport#outputReport(java.util.List)
 	 * @return An object of type {@Link EvaluationResults} with the results of the statistical evaluation
 	 */
-	public EvaluationResults performStatisticalEvaluation(StatisticalEvaluationData sampleData){
+	public EvaluationResults performStatisticalEvaluation(SampleData sampleData){
 
 		EvaluationResults evalResults = new EvaluationResults();
 		evalResults.setSampleData(sampleData);
@@ -125,18 +128,6 @@ public class Statistics {
 						samplesPerModel[i][j]=valuesPerModel.get(i).get(j);
 					}
 				}
-				/*				
-				Iterator<Entry<Integer, ArrayList<Double>>> ir = valuesPerModel.entrySet().iterator();
-			    while (ir.hasNext()) {
-			    	Entry<Integer, ArrayList<Double>> pairs = ir.next();
-			    	int modelIndex = pairs.getKey();
-			    	ArrayList<Double> sampleList = pairs.getValue();
-			    	double[] sampleArray = new double[sampleList.size()];
-			    	for(int j=0; j<sampleList.size(); j++){
-				    	sampleArray[j]=sampleList.get(j).doubleValue();
-			    	}
-			    	samplesPerModel[modelIndex]=sampleArray;
-			    }*/
 
 				//Use appropriate test as specified in config file, depending on the number of comparisons
 			    try{

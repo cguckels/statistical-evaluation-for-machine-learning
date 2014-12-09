@@ -1,9 +1,9 @@
-package de.tudarmstadt.tk.statistics.importer.mugc;
+package de.tudarmstadt.tk.statistics.importer;
 
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,14 +49,13 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.*;
 
-import de.tudarmstadt.tk.statistics.EvaluationResults;
-import de.tudarmstadt.tk.statistics.EvaluationResultsWriter;
-import de.tudarmstadt.tk.statistics.ExternalResults;
-import de.tudarmstadt.tk.statistics.Helpers;
-import de.tudarmstadt.tk.statistics.ReportTypes;
-import de.tudarmstadt.tk.statistics.StatisticalEvaluationData;
+import de.tudarmstadt.tk.statistics.SampleData;
 import de.tudarmstadt.tk.statistics.Statistics;
-import de.tudarmstadt.tk.statistics.StatsConfigConstants;
+import de.tudarmstadt.tk.statistics.config.ReportTypes;
+import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
+import de.tudarmstadt.tk.statistics.helper.Helpers;
+import de.tudarmstadt.tk.statistics.report.EvaluationResults;
+import de.tudarmstadt.tk.statistics.report.EvaluationResultsWriter;
 
 
 /**
@@ -286,22 +285,6 @@ public class ExternalResultsReader{
 					testDataName = testDataName.split("2C.csv|4C.csv|.csv")[0];
 				}
 				
-//				if (filenameTokens[0].contains("LINEAR") == false)
-//					continue;
-
-//				if (filenameTokens[0].contains("JRip") == false)
-//					continue;
-				
-//				if (filenameTokens[0].contains("Naive") == false)
-//					continue;
-
-//				if (filenameTokens[0].contains("J48") == false)
-//					continue;
-				
-//				if (filenameTokens[0].contains("Random") == false)
-//				continue;
-
-				
 				// put current file to test data name -> this way all files
 				// corresponding to the same test set are in one map
 				if (filesMap.get(testDataName) != null) {
@@ -452,39 +435,7 @@ public class ExternalResultsReader{
 
 	}
 
-	/*
-	 * public class ModelSamples{
-	 * 
-	 * private ArrayList<Double> samples; private double average; private String
-	 * classifier; private String featureSet;
-	 * 
-	 * public ModelSamples(String classifier, String featureSet) { this.samples
-	 * = new ArrayList<Double>(); this.classifier=classifier;
-	 * this.featureSet=featureSet; }
-	 * 
-	 * public ArrayList<Double> getSamples() { return samples; }
-	 * 
-	 * public void setSamples(ArrayList<Double> samples) { this.samples =
-	 * samples; }
-	 * 
-	 * public double getAverage() { return average; }
-	 * 
-	 * public void setAverage(double average) { this.average = average; }
-	 * 
-	 * public String getClassifier() { return classifier; }
-	 * 
-	 * public void setClassifier(String classifier) { this.classifier =
-	 * classifier; }
-	 * 
-	 * public String getFeatureSet() { return featureSet; }
-	 * 
-	 * public void setFeatureSet(String featureSet) { this.featureSet =
-	 * featureSet; }
-	 * 
-	 * }
-	 */
-
-	public static StatisticalEvaluationData interpretCSV(ArrayList<String[]> rows, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata, boolean isBaselineEvaluation) {
+	public static SampleData interpretCSV(ArrayList<String[]> rows, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata, boolean isBaselineEvaluation) {
 
 		HashMap<Integer, ArrayList<ArrayList<Double>>> samplesPerMeasure = new HashMap<Integer, ArrayList<ArrayList<Double>>>();
 
@@ -643,7 +594,7 @@ public class ExternalResultsReader{
 			}	
 			
 			//Default: no baseline evaluation
-			StatisticalEvaluationData sampleData = new StatisticalEvaluationData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions,isBaselineEvaluation);
+			SampleData sampleData = new SampleData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions,isBaselineEvaluation);
 			sampleData = Helpers.truncateData(sampleData, selectBestN, selectByMeasure);
 			
 			return sampleData;
@@ -714,24 +665,14 @@ public class ExternalResultsReader{
 	public static void evaluate(String pathToCsvFile, String separator, ReportTypes pipelineType,  boolean isBaselineEvaluation, HashMap<String, Integer> pipelineMetadata) {
 
 		ArrayList<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
-		StatisticalEvaluationData sampleData = interpretCSV(rows, pipelineType, pipelineMetadata, isBaselineEvaluation);
+		SampleData sampleData = interpretCSV(rows, pipelineType, pipelineMetadata, isBaselineEvaluation);
 
 		// Perform statistical evaluation of data
 		Statistics stats = new Statistics();
 		EvaluationResults evalResults = stats.performStatisticalEvaluation(sampleData);
 
 		createEvaluationReport(new File(pathToCsvFile).getParentFile().getAbsolutePath(), evalResults);
-		/*
-		 * //Write report to same folder File outputDirectory=new
-		 * File(pathToCsvFile).getParentFile(); File reportFile=new
-		 * File(outputDirectory,"statisticalEvaluationReport.tex");
-		 * 
-		 * try { Writer out = new BufferedWriter(new OutputStreamWriter(new
-		 * FileOutputStream(reportFile))); EvaluationResultsWriter resultsWriter
-		 * = new EvaluationResultsWriter(evalResults); String report =
-		 * resultsWriter.createLatexReport(outputDirectory); out.write(report);
-		 * out.close(); } catch (IOException e) { e.printStackTrace(); }
-		 */
+	
 	}
 
 	/**

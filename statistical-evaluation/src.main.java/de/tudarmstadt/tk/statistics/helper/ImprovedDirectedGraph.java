@@ -1,9 +1,9 @@
-package de.tudarmstadt.tk.statistics;
+package de.tudarmstadt.tk.statistics.helper;
 
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

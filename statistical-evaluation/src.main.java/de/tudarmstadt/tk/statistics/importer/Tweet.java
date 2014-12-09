@@ -1,4 +1,4 @@
-package de.tudarmstadt.tk.statistics.importer.mugc;
+package de.tudarmstadt.tk.statistics.importer;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Note that the tweet may not yet been annotated (preprocessed). Therefore only use it in conjunction
  * with the pipeline, as it provides a config file.<br>
  * 
- * @author Jakob
+ * @author Karolus
  *
  */
 public class Tweet implements Serializable, ClassSensitiveEntity{

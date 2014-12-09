@@ -1,9 +1,9 @@
-package de.tudarmstadt.tk.statistics;
+package de.tudarmstadt.tk.statistics.report;
 
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,13 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+
+import de.tudarmstadt.tk.statistics.AbstractTestResult;
+import de.tudarmstadt.tk.statistics.PairwiseTestResult;
+import de.tudarmstadt.tk.statistics.RBridge;
+import de.tudarmstadt.tk.statistics.TestResult;
+import de.tudarmstadt.tk.statistics.config.ReportTypes;
+import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 
 /**
  * Helper-class to write the results of a statistical evaluation, given as an object of type {@link EvaluationResults} in a human-friendly way to disk

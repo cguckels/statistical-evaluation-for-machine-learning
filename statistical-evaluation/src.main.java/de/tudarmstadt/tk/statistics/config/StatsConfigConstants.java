@@ -1,9 +1,9 @@
-package de.tudarmstadt.tk.statistics;
+package de.tudarmstadt.tk.statistics.config;
 
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public abstract class StatsConfigConstants {
 	
 	public static final String[] CORRECTION_VALUES = new String[]{"bonferroni", "holm", "hochberg","hommel","BH","BY"};
 	//public static final String[] MEASURE_VALUES = new String[]{ReportConstants.PRECISION,ReportConstants.RECALL, ReportConstants.FMEASURE,ReportConstants.WGT_PRECISION,ReportConstants.WGT_RECALL, ReportConstants.WGT_FMEASURE};
-	public static final String[] MEASURE_VALUES = new String[]{ReportConstants.WGT_PRECISION,ReportConstants.WGT_RECALL, ReportConstants.WGT_FMEASURE};
+	public static final String[] MEASURE_VALUES = new String[]{"Weighted Precision", "Weighted Recall", "Weighted F-Measure"};
 	public static final String[] TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE_VALUES = new String[]{"McNemar"};
 	public static final String[] TWO_SAMPLES_PARAMETRIC_VALUES = new String[]{"DependentT"};
 	public static final String[] TWO_SAMPLES_NONPARAMETRIC_VALUES = new String[]{"WilcoxonSignedRank"};

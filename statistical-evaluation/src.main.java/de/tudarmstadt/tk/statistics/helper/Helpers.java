@@ -1,9 +1,9 @@
-package de.tudarmstadt.tk.statistics;
+package de.tudarmstadt.tk.statistics.helper;
 
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@ import java.util.Iterator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.*;
 
+import de.tudarmstadt.tk.statistics.SampleData;
+
 /**
  * @author Guckelsberger, Schulz
  */
@@ -37,12 +39,12 @@ public class Helpers {
 	
 /**
  * Remove models with the worst performance measures from the sample data if the no. of models exceeds a certain threshold. If a baseline evaluation is performed, the baseline model is retained. If the number of models does not exceed the specified threshold, nothing happens.
- * @param sampleData An object of type {@link StatisticalEvaluationData}
+ * @param sampleData An object of type {@link SampleData}
  * @param selectBestN Maximum number of models 
  * @param selectByMeasure Measure by which to select the models
  * @return the truncated SampleData object
  */
-public static StatisticalEvaluationData truncateData(StatisticalEvaluationData sampleData, int selectBestN, String selectByMeasure){
+public static SampleData truncateData(SampleData sampleData, int selectBestN, String selectByMeasure){
 		
 		int nModels=sampleData.getModelMetadata().size();
 				

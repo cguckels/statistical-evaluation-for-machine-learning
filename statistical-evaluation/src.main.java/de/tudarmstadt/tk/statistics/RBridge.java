@@ -724,57 +724,6 @@ public class RBridge{
 	        result.getAssumptions().put("Sphericity", testSphericity);
 	        result.setStatisticType("F");
 	        
-	        /*
-	        // Initialise Ez and Reshape libraries. Load package from CRAN mirror, if not available yet.
-	        engine.eval("usePackage('ez')");
-	        engine.eval("usePackage('reshape')");
-			
-	        // Pass array and 2d-array dimensions to R
-	        engine.assign("v", v);
-	        engine.assign("dimensions", new int[]{values.length,values[0].length});
-	        
-	        // Add column with fold indices
-	        engine.eval("folds<-c(1:dimensions[2])");
-	        engine.eval("v<-c(folds,v)");
-	        engine.eval("dimensions[1]<-dimensions[1]+1");
-	        
-	        // Transform it into a matrix in R, then transform the matrix into a data frame
-	        engine.eval("m<-matrix(v,nrow = dimensions[2],ncol = dimensions[1])");
-	        engine.eval("df <- as.data.frame(m)");
-	        engine.eval("names(df)<-c('Fold',1:(dimensions[1]-1))");
-	        
-	        // Transform data frame to long format and set folds as factor
-	        engine.eval("df<-melt(df,id='Fold')");
-	        engine.eval("names(df)<-c('Fold','Model','Performance')");
-	        engine.eval("df$Fold <- factor(df$Fold, labels = c(1:(dimensions[2]))");
-
-	        // Create ANOVA-model
-	        engine.eval("model <- ezANOVA(data=df, dv=.(Performance), wid=.(Fold),within=.(Model), detailed=TRUE, type=3)");
-
-	        // Fix names to ease extraction of data
-	        engine.eval("names(model)<-c('ANOVA','Mauchlys','SphericityCorrections')");
-	        
-	        // Extract TestResult manually, because result data does not conform to any common class
-	        double p = getDoubleOrNaN(engine.eval("get('ANOVA', model)$p[2]"));
-	        double pMauchly = getDoubleOrNaN(engine.eval("get('Mauchlys', model)$p"));
-	        double pCorrectedGreenhouseGeissner = getDoubleOrNaN(engine.eval("get('p[GG]',get('SphericityCorrections',model))"));
-	        double pCorrectedHuynhFeldt = getDoubleOrNaN(engine.eval("get('p[HF]',get('SphericityCorrections',model))"));
-	        double statistic = getDoubleOrNaN(engine.eval("get('ANOVA', model)$F[2]"));
-	        double df = getDoubleOrNaN(engine.eval("get('ANOVA',model)$DFn[2]"));
-	        String method = "Repeated Measures One-Way ANOVA";
-	     	HashMap<String,Double> parameter = new HashMap<String,Double>();
-			parameter.put("df", df);
-			
-			HashMap<String,Double> sphericityParameters = new HashMap<String,Double>();
-			sphericityParameters.put("p_{GG}",pCorrectedGreenhouseGeissner);
-			sphericityParameters.put("p_{HF}",pCorrectedHuynhFeldt);
-			TestResult testSphericity = new TestResult("Mauchly's test", sphericityParameters, pMauchly, 0);
-			testSphericity.setStatisticType("\\sigma^2");
-			
-	        result=new TestResult(method,parameter,p,statistic);
-	        result.getAssumptions().put("Sphericity", testSphericity);
-	        result.setStatisticType("F");
-			*/
 		} catch (Exception e) {
 			String error="Exception while performing the Repeated-Measures One-Way ANOVA in R:"+e;
 			logger.log(Level.ERROR, error);
@@ -800,12 +749,6 @@ public class RBridge{
 			System.err.println(error);
 			return null;
 		}
-		
-		//Move baseline to the first index of the array
-		/*
-		double a[] = values[0];
-		values[0] = values[values.length-1];
-		values[values.length-1]=a;*/
 		
 		//Only one-dimensional arrays can be passed to R, thus flattening it here and unfolding it within R again
 		double[] v = flattenArray(values);
@@ -976,22 +919,7 @@ public class RBridge{
 		
 		// Extract p-values and flatten array, in order to pass to R
 		double[] v = flattenArray(result.getpValue());
-		
-		//Determine whether the p-values represent comparisons against a control method
-		//If this is the case, extract the first column. Otherwise, use the whole matrix for adjustment.
-		/*
-		int dimX,dimY;
-		if(result.isBaselineEvaluation()){
-			v=new double[result.getpValue()[0].length];
-			for(int i=0; i<v.length; i++){
-				v[i]=result.getpValue()[i][0];
-			}
-		}else{
-			v=flattenArray(result.getpValue());
-			dimX=result.getpValue().length;
-			dimY=result.getpValue()[0].length;
-		}
-		*/
+
 		try{
 			
 	        // Pass array and dimensions of origin matrix to R
@@ -1002,15 +930,12 @@ public class RBridge{
 			double[][] adjustedP = engine.eval("t(matrix(adjusted,nrow=dimensions[2]))").asDoubleMatrix();
 			
 			//Clone former result and change p-values with adjusted ones
-			//adjusted = new PairwiseTestResult(result);
-			//adjusted.setpValue(adjustedP);
 			return adjustedP;
 
 		} catch (Exception e) {
 			String error="Exception while adjusting pairwise p-values in R:"+e;
 			logger.log(Level.ERROR, error);
 			System.out.println(error);
-			//e.printStackTrace();
 			return null;
 		}
 		
@@ -1087,9 +1012,6 @@ public class RBridge{
 	        engine.eval(String.format("print(ggplot(df, aes(factor(variable), value)) + geom_boxplot() + stat_summary(fun.y=mean, colour='darkred', geom='point', shape=18, size=3,show_guide = FALSE) + theme(axis.title.x=element_blank())+scale_y_continuous(name='%s',limits=c(0,1)))",measure));
 	        engine.eval("dev.off()");
 
-	        /*
-	        engine.eval(String.format("p<-ggplot(df, aes(factor(variable), value)) + geom_boxplot() + stat_summary(fun.y=mean, colour='darkred', geom='point', shape=18, size=3,show_guide = FALSE) + theme(axis.title.x=element_blank())+scale_y_continuous(name='%s',limits=c(0,1))",measure));
-	        engine.eval(String.format("ggsave('%s.png',plot=p,height=6,width=10)",filename));*/
 		}catch (Exception e) {
 			String error="Exception while plotting a Box-Whisker-diagram in R:"+e;
 			logger.log(Level.ERROR, error);

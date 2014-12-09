@@ -1,32 +1,29 @@
-package de.tudarmstadt.tk.statistics;
+package de.tudarmstadt.tk.statistics.config;
 
 import java.io.Serializable;
+/**
+ * Copyright 2014
+ * Telecooperation (TK) Lab
+ * Technische Universit�t Darmstadt
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 
 /**
- * This enum lists all possible {@link ReportTypes} that can be obtained via {@link AbstractPipelineReport}.<br>
- * Detailed information is available per type below. For clarification the levels of reports see the following:<br><br>
- * 
- * <b>Report levels and Pipeline types:</b><br>
- * <pre>
- * 				Inner Levels						Outer Level (Dataset level)
- * 				First			Second				
- * isCV				CV(1)			None				CV_DATASET_LVL
- * isCV && is_multiple_CV		CV(2)			MULTIPLE_CV(3)			MULTIPLE_CV_DATASET_LVL
- * !isCV				None			None				TRAIN_TEST_DATASET_LVL
- *</pre><br>
- * All this information is also found in the MUGC documentation.<br><br>
- * 
- * What kind of report you will get depends where exactly you add the report in the code! (See BatchTaskPipelineReport as an example)<br>
- * For Dataset lvl: BatchTaskPipeline.init(). This will forward ALL DATASET_LVL Report to your report class.<br>
- * For Inner lvls:<br>
- * CV -> CVPipeline.defineBatchTask(..) -> This will only grant access to a normal CV (not the CVs of a MultipleCV, see (1)).<br>
- * MultipleCV -> MutipleCVPipeline.defineBatchTask(..) -> Grants access to the second lvl MULTIPLE_CV report (3).
- * Consider BatchTaskMultipleCV.init() if you want to get access to the single CVs (2) within a multiple CV.<br><br>
- * 
- * Note that you will only get reports for levels you did specify (where you added your report in the code). In other words adding a report on a 
- * dataset lvl will not grant you access to the inner level reports and vice versa.<br>
- * Where to add you report highly depends on what kind of information you need!
- * 
+ * An enum of possible data collection methods
+ * @author Guckelsberger, Schulz
  */
 public enum ReportTypes implements Serializable{
 	

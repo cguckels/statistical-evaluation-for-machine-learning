@@ -1,10 +1,10 @@
-package de.tudarmstadt.tk.statistics.importer.mugc;
+package de.tudarmstadt.tk.statistics.importer;
 
 
 /**
  * interface used for stratifying dataset differing in their class labels
  * 
- * @author Jakob
+ * @author Karolus
  *
  */
 public interface ClassSensitiveEntity {

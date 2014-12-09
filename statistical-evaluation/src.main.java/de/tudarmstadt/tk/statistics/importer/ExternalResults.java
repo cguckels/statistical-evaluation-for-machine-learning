@@ -1,9 +1,9 @@
-package de.tudarmstadt.tk.statistics;
+package de.tudarmstadt.tk.statistics.importer;
 
 /**
  * Copyright 2014
  * Telecooperation (TK) Lab
- * Technische Universität Darmstadt
+ * Technische Universitï¿½t Darmstadt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package de.tudarmstadt.tk.statistics;
  */
 
 /**
+ * Used to read a .csv with the following columns: training dataset name, testing dataset name, classifier parameters, feature set name, recall, fMeasure, precision and accuracy
  * @author Guckelsberger, Schulz
  */
 public class ExternalResults {

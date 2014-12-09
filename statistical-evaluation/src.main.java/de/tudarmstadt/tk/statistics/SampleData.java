@@ -25,12 +25,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import de.tudarmstadt.tk.statistics.config.ReportTypes;
+
 /**
- * Object to store the entire sample information for a particular pipeline run
+ * Object to store the entire sample information
  * @author Guckelsberger, Schulz
- *
  */
-public class StatisticalEvaluationData {
+public class SampleData {
 
 	//Pipeline type
 	private ReportTypes pipelineType;
@@ -68,7 +69,7 @@ public class StatisticalEvaluationData {
 	 * @param modelMetadata A HashMap comprising the metadata for each model (value), identified by an index (key)
 	 * @param isBaselineEvaluation A boolean expressing whether this test result came from a 1:n (baseline) or n:m evaluation
 	 */
-	public StatisticalEvaluationData(
+	public SampleData(
 			int[][] contingencyMatrix,
 			HashMap<String, ArrayList<ArrayList<Double>>> samples,
 			HashMap<String, ArrayList<Double>> samplesAverage,
