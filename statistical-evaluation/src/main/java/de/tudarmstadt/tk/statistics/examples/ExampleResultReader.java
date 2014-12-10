@@ -1,4 +1,4 @@
-package de.tudarmstadt.tk.statistics.unittest;
+package de.tudarmstadt.tk.statistics.examples;
 
 /**
  * Copyright 2014
@@ -28,7 +28,7 @@ import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.importer.ExternalResultsReader;
 
-public class EvaluationTester {
+public class ExampleResultReader {
 	
 	@Test
 	public void testCVInput(){
@@ -67,7 +67,7 @@ public class EvaluationTester {
 		
 		StatsConfig config = StatsConfig.getInstance(requiredTests, requiredCorrections, significanceLevels, selectBestN, selectByMeasure, fixIndependentVariable);
 		
-		String csvPath = "/Users/worldwindow/GITs/statistical-evaluation-for-machine-learning/statistical-evaluation/PerformancesDemoFile.csv";
+		String csvPath = "target/classes/de/tudarmstadt/tk/statistics/examples/PerformancesDemoFile.csv";
 		
 		ExternalResultsReader.evaluateCV(config, csvPath, ";");		
 		
