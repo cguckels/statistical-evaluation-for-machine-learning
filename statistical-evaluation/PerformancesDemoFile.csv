@@ -1,0 +1,31 @@
+Train;Test;Classifier;FeatureSet;Measure;Value;IsBaseline
+Boston.1;Boston.1;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.955319;0
+Boston.3;Boston.3;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.954770;0
+Boston.5;Boston.5;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.955319;0
+Boston.6;Boston.6;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.953485;0
+Boston.2;Boston.2;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.944326;0
+Boston.4;Boston.4;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.943232;0
+Boston.7;Boston.7;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.944326;0
+Boston.9;Boston.9;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.942549;0
+Boston.8;Boston.8;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.953901;0
+Boston.10;Boston.10;LibLinear;nGrams: 2, nGrams: 3;Weighted F-Measure;0.953050;0
+Boston.4;Boston.4;LibLinear;nGrams: 2;Weighted F-Measure;0.953901;1
+Boston.1;Boston.1;LibLinear;nGrams: 2;Weighted F-Measure;0.952371;1
+Boston.2;Boston.2;LibLinear;nGrams: 2;Weighted F-Measure;0.954965;1
+Boston.3;Boston.3;LibLinear;nGrams: 2;Weighted F-Measure;0.954401;1
+Boston.5;Boston.5;LibLinear;nGrams: 2;Weighted F-Measure;0.954965;1
+Boston.7;Boston.7;LibLinear;nGrams: 2;Weighted F-Measure;0.953142;1
+Boston.6;Boston.6;LibLinear;nGrams: 2;Weighted F-Measure;0.945035;1
+Boston.8;Boston.8;LibLinear;nGrams: 2;Weighted F-Measure;0.944133;1
+Boston.10;Boston.10;LibLinear;nGrams: 2;Weighted F-Measure;0.945035;1
+Boston.9;Boston.9;LibLinear;nGrams: 2;Weighted F-Measure;0.943192;1
+Boston.1;Boston.1;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.96;0
+Boston.3;Boston.3;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.945;0
+Boston.5;Boston.5;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.951;0
+Boston.6;Boston.6;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.97;0
+Boston.2;Boston.2;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.96;0
+Boston.4;Boston.4;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.97;0
+Boston.7;Boston.7;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.982;0
+Boston.9;Boston.9;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.973;0
+Boston.10;Boston.10;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.975;0
+Boston.8;Boston.8;LibLinear;nGrams: 2, nGrams: 4;Weighted F-Measure;0.953;0

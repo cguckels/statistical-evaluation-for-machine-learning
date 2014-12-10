@@ -844,7 +844,7 @@ public class EvaluationResultsWriter {
 						double max = getMax(ap);
 						double min = getMin(ap);
 						verbalizedP = verbalizeP(min, false);
-						ArrayList<String> adjustments = new ArrayList<String>(rPostHoc.getpValueCorrections().keySet());
+						ArrayList<StatsConfigConstants.CORRECTION_VALUES> adjustments = new ArrayList<StatsConfigConstants.CORRECTION_VALUES>(rPostHoc.getpValueCorrections().keySet());
 						String adjustWord = "";
 						if (adjustments.size() > 0) {
 							adjustWord = " for non-adjusted p-values";
@@ -894,8 +894,8 @@ public class EvaluationResultsWriter {
 							double[] minAdjustments = new double[adjustments.size()];
 							double[] maxAdjustments = new double[adjustments.size()];
 							for (int j = 0; j < adjustments.size(); j++) {
-								String adjustmentMethod = adjustments.get(j);
-								subcaption[j] = adjustmentMethod;
+								StatsConfigConstants.CORRECTION_VALUES adjustmentMethod = adjustments.get(j);
+								subcaption[j] = adjustmentMethod.name();
 								double[][] correctedP = rPostHoc.getpValueCorrections().get(adjustmentMethod);
 								if (StatsConfigConstants.PRETTY_PRINT_METHODS.containsKey(adjustmentMethod)) {
 									subcaption[j] = StatsConfigConstants.PRETTY_PRINT_METHODS.get(adjustmentMethod);
@@ -1344,7 +1344,7 @@ public class EvaluationResultsWriter {
 						double max = getMax(ap);
 						double min = getMin(ap);
 						verbalizedP = verbalizeP(min, false);
-						ArrayList<String> adjustments = new ArrayList<String>(rPostHoc.getpValueCorrections().keySet());
+						ArrayList<StatsConfigConstants.CORRECTION_VALUES> adjustments = new ArrayList<StatsConfigConstants.CORRECTION_VALUES>(rPostHoc.getpValueCorrections().keySet());
 						String adjustWord = "";
 						if (adjustments.size() > 0) {
 							adjustWord = " for non-adjusted p-values";
@@ -1367,12 +1367,13 @@ public class EvaluationResultsWriter {
 							double[] minAdjustments = new double[adjustments.size()];
 							double[] maxAdjustments = new double[adjustments.size()];
 							for (int j = 0; j < adjustments.size(); j++) {
-								String adjustmentMethod = adjustments.get(j);
+								StatsConfigConstants.CORRECTION_VALUES adjustmentMethod = adjustments.get(j);
 								double[][] correctedP = rPostHoc.getpValueCorrections().get(adjustmentMethod);
-								if (StatsConfigConstants.PRETTY_PRINT_METHODS.containsKey(adjustmentMethod)) {
-									adjustmentMethod = StatsConfigConstants.PRETTY_PRINT_METHODS.get(adjustmentMethod);
+								String am = adjustmentMethod.name();
+								if (StatsConfigConstants.PRETTY_PRINT_METHODS.containsKey(am)) {
+									am = StatsConfigConstants.PRETTY_PRINT_METHODS.get(am);
 								}
-								report.append(String.format("\nAdjusted p-values according to %s:\n%s", adjustmentMethod, this.pairwiseResultsToString(correctedP)));
+								report.append(String.format("\nAdjusted p-values according to %s:\n%s", am, this.pairwiseResultsToString(correctedP)));
 
 								minAdjustments[j] = getMin(correctedP);
 								maxAdjustments[j] = getMax(correctedP);

@@ -22,6 +22,7 @@ package de.tudarmstadt.tk.statistics.unittest;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.test.PairwiseTestResult;
 import de.tudarmstadt.tk.statistics.test.RBridge;
 import de.tudarmstadt.tk.statistics.test.TestResult;
@@ -306,7 +307,7 @@ public class RStatsTester {
 		RBridge stats = RBridge.getInstance(true);
 		PairwiseTestResult r = stats.testPairwiseDependentT(samples);
 
-		double[][] actual = stats.adjustP(r, "bonferroni");
+		double[][] actual = stats.adjustP(r, StatsConfigConstants.CORRECTION_VALUES.bonferroni);
 		double[][] expected = { { 0.0121 }, { 0.0056, 1 }, { 1, 1, 1 } };
 
 		try {

@@ -21,6 +21,7 @@ package de.tudarmstadt.tk.statistics.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Comprises allowed values (e.g. available performance measures, statistical
@@ -28,27 +29,26 @@ import java.util.HashMap;
  * 
  * @author Guckelsberger, Schulz
  */
+
 public abstract class StatsConfigConstants {
 
-	public static final ArrayList<String> INDEPENDENT_VARIABLES_VALUES = new ArrayList<String>(){{
-		add("Classifier");
-		add("FeatureSet");
-	}};
+	public static enum TEST_CLASSES{
+		TwoSamplesNonParametricContingency,
+		TwoSamplesParametric,
+		TwoSamplesNonParametric,
+		MultipleSamplesParametric,
+		MultipleSamplesNonParametric,
+		MultipleSamplesParametricPosthoc,
+		MultipleSamplesNonParametricPostHoc,
+		MultipleSamplesParametricPosthocBaseline,
+		MultipleSamplesNonParametricPostHocBaseline
+		};
+		
+	public static enum INDEPENDENT_VARIABLES_VALUES{Classifier, FeatureSet};
 	
-	public static final ArrayList<String> CORRECTION_VALUES = new ArrayList<String>(){{
-		add("bonferroni");
-		add("holm");
-		add("hochberg");
-		add("hommel");
-		add("BH");
-		add("BY");
-	}};
+	public static enum CORRECTION_VALUES{bonferroni, holm, hochberg, hommel, BH, BY};
 	
-	public static final ArrayList<String> SIGNIFICANCE_LEVEL_VALUES = new ArrayList<String>(){{
-		add("low");
-		add("medium");
-		add("high");
-	}};
+	public static enum SIGNIFICANCE_LEVEL_VALUES{low, medium, high};
 	
 	public static final ArrayList<String> TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE_VALUES = new ArrayList<String>(){{add("McNemar");}};
 	public static final ArrayList<String> TWO_SAMPLES_PARAMETRIC_VALUES = new ArrayList<String>(){{add("DependentT");}};
@@ -60,16 +60,16 @@ public abstract class StatsConfigConstants {
 	public static final ArrayList<String> MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_VALUES = new ArrayList<String>(){{add("Nemenyi");}};
 	public static final ArrayList<String> MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_BASELINE_VALUES = new ArrayList<String>(){{add("PairwiseWilcoxonSignedRank");}};
 	
-	public static final HashMap<String,ArrayList<String>> TESTS = new HashMap<String,ArrayList<String>>(){{
-		put("TwoSamplesNonParametricContingency",TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE_VALUES);
-		put("TwoSamplesParametric",TWO_SAMPLES_PARAMETRIC_VALUES);
-		put("TwoSamplesNonParametric",TWO_SAMPLES_NONPARAMETRIC_VALUES);
-		put("MultipleSamplesParametric",MULTIPLE_SAMPLES_PARAMETRIC_VALUES);
-		put("MultipleSamplesNonParametric",MULTIPLE_SAMPLES_NONPARAMETRIC_VALUES);
-		put("MultipleSamplesParametricPosthoc",MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_VALUES);
-		put("MultipleSamplesNonParametricPostHoc",MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_VALUES);
-		put("MultipleSamplesParametricPosthocBaseline",MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_BASELINE_VALUES);
-		put("MultipleSamplesNonParametricPostHocBaseline",MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_BASELINE_VALUES);};
+	public static final HashMap<TEST_CLASSES,ArrayList<String>> TESTS = new HashMap<TEST_CLASSES,ArrayList<String>>(){{
+		put(TEST_CLASSES.TwoSamplesNonParametricContingency,TWO_SAMPLES_NONPARAMETRIC_CONTINGENCY_TABLE_VALUES);
+		put(TEST_CLASSES.TwoSamplesParametric,TWO_SAMPLES_PARAMETRIC_VALUES);
+		put(TEST_CLASSES.TwoSamplesNonParametric,TWO_SAMPLES_NONPARAMETRIC_VALUES);
+		put(TEST_CLASSES.MultipleSamplesParametric,MULTIPLE_SAMPLES_PARAMETRIC_VALUES);
+		put(TEST_CLASSES.MultipleSamplesNonParametric,MULTIPLE_SAMPLES_NONPARAMETRIC_VALUES);
+		put(TEST_CLASSES.MultipleSamplesParametricPosthoc,MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_VALUES);
+		put(TEST_CLASSES.MultipleSamplesNonParametricPostHoc,MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_VALUES);
+		put(TEST_CLASSES.MultipleSamplesParametricPosthocBaseline,MULTIPLE_SAMPLES_PARAMETRIC_POSTHOC_BASELINE_VALUES);
+		put(TEST_CLASSES.MultipleSamplesNonParametricPostHocBaseline,MULTIPLE_SAMPLES_NONPARAMETRIC_POSTHOC_BASELINE_VALUES);};
 	};
 
 	public static final HashMap<String,String> PRETTY_PRINT_METHODS = new HashMap<String,String>(){
@@ -89,6 +89,7 @@ public abstract class StatsConfigConstants {
 						put("Tukey","Tukey's test");
 						put("Dunett","Dunett's test");
 						put("PairwiseWilcoxonSignedRank","Pairwise Wilcoxon signed-rank test");}
-						};
+					};
+	
 	}
 						

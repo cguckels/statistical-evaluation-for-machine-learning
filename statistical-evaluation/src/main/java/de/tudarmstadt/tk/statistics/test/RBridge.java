@@ -30,6 +30,8 @@ import org.rosuda.JRI.RList;
 import org.rosuda.JRI.RMainLoopCallbacks;
 import org.rosuda.JRI.Rengine;
 
+import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
+
 /**
  * Wrapper class for performing statistics using R and the JRI bridge
  * (Singleton).
@@ -192,7 +194,6 @@ public class RBridge {
 				statistic = resultList.at("statistic").asDoubleMatrix();
 			}
 			String method = resultList.at("method").asString();
-			String adjustMethod = resultList.at("p.adjust.method").asString();
 			HashMap<String, Double> parameter = new HashMap<String, Double>();
 			RList parameterList = engine.eval(String.format("names(%s$parameter)", resourceName)).asList();
 			if (parameterList != null) {
@@ -203,7 +204,7 @@ public class RBridge {
 				}
 			}
 
-			return new PairwiseTestResult(method, adjustMethod, parameter, p, statistic);
+			return new PairwiseTestResult(method, parameter, p, statistic);
 		}
 
 		return null;
@@ -591,7 +592,7 @@ public class RBridge {
 				}
 			}
 
-			result = new PairwiseTestResult("Pairwise Wilcoxon Signed-Rank test", null, new HashMap<String, Double>(), pValue, statistic);
+			result = new PairwiseTestResult("Pairwise Wilcoxon Signed-Rank test", new HashMap<String, Double>(), pValue, statistic);
 			result.setRequiresPValueCorrection(true);
 			result.setStatisticType("W");
 
@@ -703,7 +704,7 @@ public class RBridge {
 					}
 				}
 			}
-			PairwiseTestResult normality = new PairwiseTestResult("Shapiro-Wilk normality test", null, null, pValue, statistic);
+			PairwiseTestResult normality = new PairwiseTestResult("Shapiro-Wilk normality test", null, pValue, statistic);
 			normality.setStatisticType("W");
 
 			// Transform data frame to long format and set models as grouping
@@ -946,7 +947,7 @@ public class RBridge {
 			}
 
 			String method = "Dunnett's test";
-			result = new PairwiseTestResult(method, null, new HashMap<String, Double>(), pValue, statistic);
+			result = new PairwiseTestResult(method, new HashMap<String, Double>(), pValue, statistic);
 			result.setStatisticType("t");
 
 		} catch (Exception e) {
@@ -1035,7 +1036,7 @@ public class RBridge {
 			}
 
 			String method = "Tukey's test";
-			result = new PairwiseTestResult(method, null, new HashMap<String, Double>(), pValue, statistic);
+			result = new PairwiseTestResult(method, new HashMap<String, Double>(), pValue, statistic);
 			result.setStatisticType("t");
 
 		} catch (Exception e) {
@@ -1076,7 +1077,7 @@ public class RBridge {
 	 *            adjustment
 	 * @return an updated copy of PairwiseTestResult with adjusted p-values
 	 */
-	public double[][] adjustP(PairwiseTestResult result, String method) {
+	public double[][] adjustP(PairwiseTestResult result, StatsConfigConstants.CORRECTION_VALUES method) {
 
 		// Extract p-values and flatten array, in order to pass to R
 		double[] v = flattenArray(result.getpValue());
@@ -1087,7 +1088,7 @@ public class RBridge {
 	        engine.assign("v", v);
 	        engine.assign("dimensions", new int[]{result.getpValue().length,result.getpValue()[0].length});
 	        
-	        engine.eval(String.format("adjusted <- p.adjust(v,method='%s')",method));
+	        engine.eval(String.format("adjusted <- p.adjust(v,method='%s')",method.name()));
 			double[][] adjustedP = engine.eval("t(matrix(adjusted,nrow=dimensions[2]))").asDoubleMatrix();
 			
 			//Clone former result and change p-values with adjusted ones

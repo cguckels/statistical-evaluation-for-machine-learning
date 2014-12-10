@@ -35,11 +35,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -50,6 +52,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.tudarmstadt.tk.statistics.config.ReportTypes;
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
+import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.helper.Helpers;
 import de.tudarmstadt.tk.statistics.report.EvaluationResults;
 import de.tudarmstadt.tk.statistics.report.EvaluationResultsWriter;
@@ -582,7 +585,7 @@ public class ExternalResultsReader{
 
 	}
 
-	public static SampleData interpretCSV(StatsConfig config, ArrayList<String[]> rows, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata, boolean isBaselineEvaluation) {
+	public static SampleData interpretCSV(StatsConfig config, ArrayList<String[]> rows, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
 
 		HashMap<Integer, ArrayList<ArrayList<Double>>> samplesPerMeasure = new HashMap<Integer, ArrayList<ArrayList<Double>>>();
 
@@ -594,11 +597,13 @@ public class ExternalResultsReader{
 			int selectBestN = config.getSelectBestN();
 			String selectByMeasure = config.getSelectByMeasure();
 			
-			// Preprocessing: Parse different models (classifier + feature set
-			// column) and measures
+			// Preprocessing: Parse different models (classifier + feature set column) and measures
 			ArrayList<String> measures = new ArrayList<String>();
 			ArrayList<Pair<String, String>> datasets = new ArrayList<Pair<String, String>>();
 			ArrayList<Pair<String, String>> models = new ArrayList<Pair<String, String>>();
+			Pair<String, String> baselineModel = null;
+			Set<String> fsSet = new HashSet<String>();
+			Set<String> cSet = new HashSet<String>();
 
 			for (int i = 0; i < rows.size(); i++) {
 				String[] columns = rows.get(i);
@@ -609,7 +614,12 @@ public class ExternalResultsReader{
 				String featureSets = columns[3];
 				Pair<String, String> model = Pair.of(classifier,featureSets);
 				if (!models.contains(model)) {
+					fsSet.add(featureSets);
+					cSet.add(classifier);
 					models.add(model);
+					if(baselineModel==null && Integer.parseInt(columns[6])==1){
+						baselineModel = model;
+					}
 				}
 				if (!measures.contains(columns[4])) {
 					measures.add(columns[4]);
@@ -622,7 +632,9 @@ public class ExternalResultsReader{
 				String[] columns = rows.get(i);
 				Pair<String, String> data = null;
 				String trainData = columns[0].trim();
+				trainData=trainData.split("\\.")[0];
 				String testData = columns[1].trim();
+				testData=testData.split("\\.")[0];
 				if (trainData.equals(testData)) {
 					data = Pair.of(trainData, null);
 				} else {
@@ -642,6 +654,20 @@ public class ExternalResultsReader{
 				}
 				samplesPerMeasure.put(i, samplesPerModel);
 			}
+			
+	/*
+			//Only separate data if there's more than one independent variable
+			if(fsSet.size()>1 && cSet.size()>1){
+				HashMap<String, SampleData> temp = new HashMap<String,SampleData>();
+				if(config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier){
+					
+				}
+			}
+			*/
+			
+			
+			
+			
 
 			// Assign samples to different models
 			for (int i = 0; i < rows.size(); i++) {
@@ -731,7 +757,14 @@ public class ExternalResultsReader{
 			}	
 			
 			//Default: no baseline evaluation
-			SampleData sampleData = new SampleData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions,isBaselineEvaluation);
+			boolean isBaselineEvaluation = (baselineModel == null) ? false : true;
+			//Reorder data in case of a baseline evaluation (baseline first)
+			if(isBaselineEvaluation){
+				models.remove(baselineModel);
+				models.add(0,baselineModel);
+			}
+			
+			SampleData sampleData = new SampleData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions, isBaselineEvaluation);
 			sampleData = Helpers.truncateData(sampleData, selectBestN, selectByMeasure);
 			
 			return sampleData;
@@ -744,13 +777,12 @@ public class ExternalResultsReader{
 	 * Use this method if the data stems from an n-fold cross-validation. Each line should represent the model's performance for one fold of the CV.
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
-	 * @param againstBaseline If set to true, all models are compared against the first model specified in the external data.
 	 */
-	public static void evaluateCV(StatsConfig config, String pathToCsvFile, String separator, boolean againstBaseline) {
+	public static void evaluateCV(StatsConfig config, String pathToCsvFile, String separator) {
 		logger.log(Level.INFO, "Starting evaluation of data from a simple cross-validation.");
 
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		evaluate(config, pathToCsvFile, separator, ReportTypes.CV, againstBaseline, pipelineMetadata);
+		evaluate(config, pathToCsvFile, separator, ReportTypes.CV, pipelineMetadata);
 	}
 
 	/**
@@ -758,14 +790,13 @@ public class ExternalResultsReader{
 	 * Use this method if the data stems from a repeated n-fold cross-validation. Each line should represent the model's performance for one CV averaged over all folds.
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
-	 * @param againstBaseline If set to true, all models are compared against the first model specified in the external data.
 	 */
-	public static void evaluateRepeatedCV(StatsConfig config, String pathToCsvFile, String separator, int nFolds, boolean againstBaseline) {
+	public static void evaluateRepeatedCV(StatsConfig config, String pathToCsvFile, String separator, int nFolds) {
 		logger.log(Level.INFO, "Starting evaluation of data from a repeated cross-validation.");
 		
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
 		pipelineMetadata.put("nFolds", nFolds);
-		evaluate(config, pathToCsvFile, separator, ReportTypes.MULTIPLE_CV, againstBaseline, pipelineMetadata);
+		evaluate(config, pathToCsvFile, separator, ReportTypes.MULTIPLE_CV, pipelineMetadata);
 	}
 
 	/*
@@ -790,25 +821,25 @@ public class ExternalResultsReader{
 	 * Use this method if the data stems from a Train-Test-Evaluation. Each line should represent the model's performance for one test.
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
-	 * @param againstBaseline If set to true, all models are compared against the first model specified in the external data.
 	 */
-	public static void evaluateTrainTest(StatsConfig config, String pathToCsvFile, String separator, boolean againstBaseline) {
+	public static void evaluateTrainTest(StatsConfig config, String pathToCsvFile, String separator) {
 		logger.log(Level.INFO, "Starting evaluation of data from a Train-Test scenario.");
 
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		evaluate(config, pathToCsvFile, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, againstBaseline, pipelineMetadata);
+		evaluate(config, pathToCsvFile, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, pipelineMetadata);
 	}
 
-	public static void evaluate(StatsConfig config, String pathToCsvFile, String separator, ReportTypes pipelineType,  boolean isBaselineEvaluation, HashMap<String, Integer> pipelineMetadata) {
+	public static void evaluate(StatsConfig config, String pathToCsvFile, String separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
 
 		ArrayList<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
-		SampleData sampleData = interpretCSV(config, rows, pipelineType, pipelineMetadata, isBaselineEvaluation);
+		SampleData sampleData = interpretCSV(config, rows, pipelineType, pipelineMetadata);
 
 		// Perform statistical evaluation of data
 		Statistics stats = new Statistics(config);
 		EvaluationResults evalResults = stats.performStatisticalEvaluation(sampleData);
-
-		createEvaluationReport(new File(pathToCsvFile).getParentFile().getAbsolutePath(), evalResults);
+		String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
+		
+		createEvaluationReport(outputPath, evalResults);
 
 	}
 

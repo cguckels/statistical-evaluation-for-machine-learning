@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
+
 /**
  * Representation of a statistic test result involving pairwise comparisons,
  * allowing to print the results or use them further
@@ -32,27 +34,26 @@ import java.util.Map.Entry;
  */
 public class PairwiseTestResult extends AbstractTestResult {
 
-	private HashMap<String, double[][]> pValueCorrections;
+	private HashMap<StatsConfigConstants.CORRECTION_VALUES, double[][]> pValueCorrections;
 
-	public HashMap<String, double[][]> getpValueCorrections() {
+	public HashMap<StatsConfigConstants.CORRECTION_VALUES, double[][]> getpValueCorrections() {
 		return pValueCorrections;
 	}
 
 	private double[][] pValue;
 	private double[][] statistic;
-	private String correctionMethod;
+	private StatsConfigConstants.CORRECTION_VALUES correctionMethod;
 	private boolean requiresPValueCorrection;
 
 	// Used to determine whether the p-values in this TestResult emerge from
 	// evaluating n items pairwise (NxN) or all items against one control item
 	// (Control)
 
-	public PairwiseTestResult(String method, String correctionMethod, HashMap<String, Double> parameter, double[][] pValue, double[][] statistic) {
+	public PairwiseTestResult(String method, HashMap<String, Double> parameter, double[][] pValue, double[][] statistic) {
 		super(method, parameter);
 		this.pValue = pValue;
 		this.statistic = statistic;
-		this.correctionMethod = correctionMethod;
-		pValueCorrections = new HashMap<String, double[][]>();
+		pValueCorrections = new HashMap<StatsConfigConstants.CORRECTION_VALUES, double[][]>();
 		requiresPValueCorrection = false;
 	}
 
@@ -66,7 +67,7 @@ public class PairwiseTestResult extends AbstractTestResult {
 			this.assumptions = (HashMap<String, AbstractTestResult>) r.assumptions.clone();
 		}
 		if (r.pValueCorrections != null) {
-			this.pValueCorrections = (HashMap<String, double[][]>) r.pValueCorrections.clone();
+			this.pValueCorrections = (HashMap<StatsConfigConstants.CORRECTION_VALUES, double[][]>) r.pValueCorrections.clone();
 		}
 		this.correctionMethod = r.correctionMethod;
 		this.statisticType = r.getStatisticType();
@@ -104,11 +105,11 @@ public class PairwiseTestResult extends AbstractTestResult {
 		return statistic;
 	}
 
-	public String getCorrectionMethod() {
+	public StatsConfigConstants.CORRECTION_VALUES getCorrectionMethod() {
 		return correctionMethod;
 	}
 
-	public void addPValueCorrections(String method, double[][] pValues) {
+	public void addPValueCorrections(StatsConfigConstants.CORRECTION_VALUES method, double[][] pValues) {
 		this.pValueCorrections.put(method, pValues);
 	}
 

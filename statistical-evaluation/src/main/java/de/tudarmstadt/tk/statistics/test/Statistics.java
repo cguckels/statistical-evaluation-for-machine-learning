@@ -37,6 +37,7 @@ import org.apache.logging.log4j.Logger;
 import org.jgrapht.graph.DefaultEdge;
 
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
+import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.helper.ImprovedDirectedGraph;
 import de.tudarmstadt.tk.statistics.report.EvaluationResults;
 
@@ -73,7 +74,7 @@ public class Statistics {
 
 		EvaluationResults evalResults = new EvaluationResults();
 		evalResults.setSampleData(sampleData);
-		evalResults.setSignificanceLevel(config.getSignificanceLevels().get("low"), config.getSignificanceLevels().get("medium"), config.getSignificanceLevels().get("high") );
+		evalResults.setSignificanceLevel(config.getSignificanceLevels().get(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.low), config.getSignificanceLevels().get(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.medium), config.getSignificanceLevels().get(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.high) );
 		evalResults.setIsBaselineEvaluation(sampleData.isBaselineEvaluation());
 		int nModels = 0;
 
@@ -127,7 +128,7 @@ public class Statistics {
 		// Perform evaluation on contingency matrix if appropriate test is
 		// provided and there are only two models to be evaluated on a single
 		// domain
-		String nonParametricContingency = config.getRequiredTests().get("TwoSamplesNonParametricContingency");
+		String nonParametricContingency = config.getRequiredTests().get(StatsConfigConstants.TEST_CLASSES.TwoSamplesNonParametricContingency);
 		if (!nonParametricContingency.isEmpty() && nModels == 2) {
 			int[][] contingency = sampleData.getContingencyMatrix();
 			// Only available if two models were evaluated on a single domain
@@ -164,14 +165,14 @@ public class Statistics {
 	 *            A two-dimensional array of performance measure samples for the
 	 *            different models/folds
 	 */
-	private void testTwoModels(EvaluationResults evalResults, HashMap<String, String> requiredTests, double[][] samples, String measure) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
+	private void testTwoModels(EvaluationResults evalResults, HashMap<StatsConfigConstants.TEST_CLASSES, String> requiredTests, double[][] samples, String measure) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
 
 		RBridge stats = RBridge.getInstance(false);
 
 		// Get required tests for two samples on one/multiple domains
-		String testParametric = requiredTests.get("TwoSamplesParametric");
-		String testNonParametric = requiredTests.get("TwoSamplesNonParametric");
+		String testParametric = requiredTests.get(StatsConfigConstants.TEST_CLASSES.TwoSamplesParametric);
+		String testNonParametric = requiredTests.get(StatsConfigConstants.TEST_CLASSES.TwoSamplesNonParametric);
 
 		evalResults.setParametricTest(testParametric);
 		evalResults.setNonParametricTest(testNonParametric);
@@ -184,12 +185,10 @@ public class Statistics {
 		evalResults.addParametricTestResult(Pair.of(testParametric, (AbstractTestResult) result), measure);
 
 		// Always perform non-parametric alternative
-		if (result == null) {
-			logger.log(Level.INFO, String.format("Performing non-parametric omnibus test for comparing 2 models: %s", testNonParametric));
-			m = RBridge.class.getMethod(String.format("test%s", testNonParametric), double[].class, double[].class);
-			result = (TestResult) m.invoke(stats, samples[0], samples[1]);
-			evalResults.addNonParametricTestResult(Pair.of(testNonParametric, (AbstractTestResult) result), measure);
-		}
+		logger.log(Level.INFO, String.format("Performing non-parametric omnibus test for comparing 2 models: %s", testNonParametric));
+		m = RBridge.class.getMethod(String.format("test%s", testNonParametric), double[].class, double[].class);
+		result = (TestResult) m.invoke(stats, samples[0], samples[1]);
+		evalResults.addNonParametricTestResult(Pair.of(testNonParametric, (AbstractTestResult) result), measure);
 	}
 
 	/**
@@ -206,22 +205,22 @@ public class Statistics {
 	 *            The corrections to be performed when doing multiple
 	 *            comparisons testing, e.g. Bonferroni adjustment
 	 */
-	private void testMultipleModels(EvaluationResults evalResults, HashMap<String, String> requiredTests, List<String> requiredCorrections, double[][] samples, ArrayList<Double> averageSamplesPerModel, String measure, boolean isBaselineEvaluation)
+	private void testMultipleModels(EvaluationResults evalResults, HashMap<StatsConfigConstants.TEST_CLASSES, String> requiredTests, List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections, double[][] samples, ArrayList<Double> averageSamplesPerModel, String measure, boolean isBaselineEvaluation)
 			throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		RBridge stats = RBridge.getInstance(true);
 		// Get required tests for >2 samples
-		String testParametric = requiredTests.get("MultipleSamplesParametric");
-		String testNonParametric = requiredTests.get("MultipleSamplesNonParametric");
+		String testParametric = requiredTests.get(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametric);
+		String testNonParametric = requiredTests.get(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametric);
 
 		String testPostHocParametric = null;
 		String testPostHocNonParametric = null;
 		if (!isBaselineEvaluation) {
-			testPostHocParametric = requiredTests.get("MultipleSamplesParametricPosthoc");
-			testPostHocNonParametric = requiredTests.get("MultipleSamplesNonParametricPostHoc");
+			testPostHocParametric = requiredTests.get(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametricPosthoc);
+			testPostHocNonParametric = requiredTests.get(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametricPostHoc);
 		} else {
-			testPostHocParametric = requiredTests.get("MultipleSamplesParametricPosthocBaseline");
-			testPostHocNonParametric = requiredTests.get("MultipleSamplesNonParametricPostHocBaseline");
+			testPostHocParametric = requiredTests.get(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametricPosthocBaseline);
+			testPostHocNonParametric = requiredTests.get(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametricPostHocBaseline);
 		}
 
 		evalResults.setParametricTest(testParametric);
@@ -243,7 +242,7 @@ public class Statistics {
 			PairwiseTestResult postHocResult = (PairwiseTestResult) m.invoke(stats, samples);
 
 			if (postHocResult.getRequiresPValueCorrection()) {
-				for (String s : requiredCorrections) {
+				for (StatsConfigConstants.CORRECTION_VALUES s : requiredCorrections) {
 					postHocResult.addPValueCorrections(s, stats.adjustP(postHocResult, s));
 				}
 			}
@@ -279,7 +278,7 @@ public class Statistics {
 		PairwiseTestResult postHocResult = (PairwiseTestResult) m.invoke(stats, samples);
 
 		if (postHocResult.getRequiresPValueCorrection()) {
-			for (String s : requiredCorrections) {
+			for (StatsConfigConstants.CORRECTION_VALUES s : requiredCorrections) {
 				postHocResult.addPValueCorrections(s, stats.adjustP(postHocResult, s));
 			}
 		}
@@ -364,7 +363,10 @@ public class Statistics {
 
 		for (int i = 0; i < pValues.length; i++) {
 			for (int j = 0; j <= i; j++) {
-				if (pValues[i][j] <= config.getSignificanceLevels().get("medium")) {
+				if(Double.isNaN(pValues[i][j])){
+					continue;
+				}
+				if (pValues[i][j] <= config.getSignificanceLevels().get(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.medium)) {
 					if (averageSamplesPerModel.get(i + 1) < averageSamplesPerModel.get(j)) {
 						directedGraph.addEdge(i + 1, j);
 					} else {

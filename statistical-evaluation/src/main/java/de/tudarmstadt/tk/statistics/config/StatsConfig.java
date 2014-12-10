@@ -23,7 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -60,12 +62,12 @@ public class StatsConfig {
     private static final Logger logger = LogManager.getLogger("Statistics");
     private static String SCHEMA_PATH = "config.xsd";
 	
-	private	HashMap<String,String> requiredTests = null;
-	private	List<String> requiredCorrections = null;
-	private HashMap<String, Double> significanceLevels = null;
+	private	HashMap<StatsConfigConstants.TEST_CLASSES,String> requiredTests = null;
+	private	List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections = null;
+	private HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES,Double> significanceLevels = null;
 	private int selectBestN;
 	private String selectByMeasure;
-	private String fixIndependentVariable;
+	private StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable;
 	
 	public static StatsConfig getInstance(String filePath) {
 		if (instance == null) {
@@ -78,9 +80,65 @@ public class StatsConfig {
 		return instance;
 	}
 	
+	public static StatsConfig getInstance(HashMap<StatsConfigConstants.TEST_CLASSES,String> requiredTests, List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections, HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES,Double> significanceLevels, int selectBestN, String selectByMeasure, StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable) {
+		if (instance == null) {
+			synchronized (RBridge.class) {
+				if (instance == null) {
+					
+					//Validate arguments
+					//Tests
+					if(requiredTests.size()!=StatsConfigConstants.TEST_CLASSES.values().length){
+						throw new IllegalArgumentException("Number of test classes specified does not match requirements!");
+					}
+					Iterator<StatsConfigConstants.TEST_CLASSES> itT = requiredTests.keySet().iterator();
+					while(itT.hasNext()){
+						StatsConfigConstants.TEST_CLASSES testClass = itT.next();
+						String testName = requiredTests.get(testClass);
+						
+						if(!StatsConfigConstants.TESTS.get(testClass).contains(testName)){
+							throw new IllegalArgumentException(testName + " is not a valid test for test class " + testClass+"!");
+						}
+					}
+					
+					//Correction methods
+					if(requiredCorrections.size()==0){
+						throw new IllegalArgumentException("At least one p-value correction method must be specified!");	
+					}
+					
+					//Significance levels
+					if(requiredCorrections.size()!=StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.values().length){
+						throw new IllegalArgumentException("Number of significance levels specified does not match requirements!");
+					}
+					Iterator<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES> it = significanceLevels.keySet().iterator();
+					while(it.hasNext()){
+						double significanceValue = significanceLevels.get(it.next());
+						if(significanceValue<0 || significanceValue>1){
+							throw new IllegalArgumentException(significanceValue + " is not a valid significance value (must be between 0 and 1)!");
+						}
+					}
+					
+					instance = new StatsConfig(requiredTests, requiredCorrections, significanceLevels, selectBestN, selectByMeasure, fixIndependentVariable); 
+					
+				}
+			}
+		}
+		return instance;
+	}
+	
 	private StatsConfig(String pathToConfigFile) {
 
 		this.parseXML(pathToConfigFile);
+		
+	}
+	
+	private StatsConfig(HashMap<StatsConfigConstants.TEST_CLASSES,String> requiredTests, List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections, HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES,Double> significanceLevels, int selectBestN, String selectByMeasure, StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable){
+
+		this.requiredTests = requiredTests;
+		this.requiredCorrections = requiredCorrections;
+		this.significanceLevels = significanceLevels;
+		this.selectBestN = selectBestN;
+		this.selectByMeasure = selectByMeasure;
+		this.fixIndependentVariable = fixIndependentVariable;
 		
 	}
 	
@@ -113,9 +171,9 @@ public class StatsConfig {
 
 		
 		//Parse
-		requiredTests = new HashMap<String,String>();
-		requiredCorrections = new ArrayList<String>();
-		significanceLevels = new HashMap<String, Double>();
+		requiredTests = new HashMap<StatsConfigConstants.TEST_CLASSES,String>();
+		requiredCorrections = new ArrayList<StatsConfigConstants.CORRECTION_VALUES>();
+		significanceLevels = new HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES,Double>();
 		
 	    XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 	    InputStream in;
@@ -139,13 +197,21 @@ public class StatsConfig {
 				        	  n = event.asCharacters().getData();
 				          }
 		        	  }
-		        	  if(StatsConfigConstants.TESTS.containsKey(c)){
-		        		  if(StatsConfigConstants.TESTS.get(c).contains(n)){
-				        	  requiredTests.put(c, n);
-				        	  continue;
-		        		  }
+		        	  
+		        	  boolean illegal = true;
+		        	  for (StatsConfigConstants.TEST_CLASSES tc : StatsConfigConstants.TEST_CLASSES.values()) {
+		        	        if (tc.name().equals(c)) {
+		        	        	 if(StatsConfigConstants.TESTS.get(tc).contains(n)){
+		        	        		 requiredTests.put(tc, n);
+				        	         illegal = false;
+						        	 break;
+				        		  }
+		        	        }
 		        	  }
-		        	  throw new IllegalArgumentException(c + ", " + n); 
+		        	  
+		        	  if(illegal){
+		        		  throw new IllegalArgumentException(c + ", " + n); 
+		        	  }
 		          }
 		          else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("significanceLevel")) {
 		        	  String l = null;
@@ -160,21 +226,36 @@ public class StatsConfig {
 				        	  v = Double.parseDouble(event.asCharacters().getData());
 				          }
 		        	  }
-		        	  if(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.contains(l)){
-			        	  significanceLevels.put(l, v);
-			        	  continue;
+		        	  
+		        	  boolean illegal = true;
+		        	  for (StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES s : StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.values()) {
+		        	        if (s.name().equals(l)) {
+		        	        	significanceLevels.put(s, v);
+		        	        	illegal = false;
+					        	break;		        	        
+					        }
 		        	  }
-		        	  throw new IllegalArgumentException(l); 
+		        	  
+		        	  if(illegal){
+		        		  throw new IllegalArgumentException(l); 
+		        	  }
 		          }
 		          else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("pCorrection")) {
 		        	  event = eventReader.nextEvent();
 		        	  String pC = event.asCharacters().getData();
 		        	  
-		        	  if(StatsConfigConstants.CORRECTION_VALUES.contains(pC)){
-			        	  requiredCorrections.add(pC);
-			        	  continue;
+		        	  boolean illegal = true;
+		        	  for (StatsConfigConstants.CORRECTION_VALUES c : StatsConfigConstants.CORRECTION_VALUES.values()) {
+		        	        if (c.name().equals(pC)) {
+		        	        	requiredCorrections.add(c);
+		        	        	illegal = false;
+					        	break;		        	        
+					        }
 		        	  }
-		        	  throw new IllegalArgumentException(pC); 
+		        	  
+		        	  if(illegal){
+		        		  throw new IllegalArgumentException(pC); 
+		        	  }
 		          }
 		          else if (event.isStartElement() && event.asStartElement().getName().getLocalPart().equals("selectBest")) {
 		        	  while(!(event.isEndElement() && event.asEndElement().getName().getLocalPart().equals("selectBest"))){
@@ -192,11 +273,18 @@ public class StatsConfig {
 		        	  event = eventReader.nextEvent();
 		        	  String f = event.asCharacters().getData();
 		        	  
-		        	  if(StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.contains(f)){
-			        	  fixIndependentVariable=f;
-			        	  continue;
+		        	  boolean illegal = true;
+		        	  for (StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES i : StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.values()) {
+		        	        if (i.name().equals(f)) {
+		        	        	fixIndependentVariable=i;
+		        	        	illegal=false;
+		        	        	break;		        	        
+					        }
 		        	  }
-		        	  throw new IllegalArgumentException(f); 
+		        	  
+		        	  if(illegal){
+		        		  throw new IllegalArgumentException(f); 
+		        	  }
 		          }
 		      }	
 		      
@@ -215,11 +303,11 @@ public class StatsConfig {
 		}
 	}
 
-	public HashMap<String, String> getRequiredTests() {
+	public HashMap<StatsConfigConstants.TEST_CLASSES, String> getRequiredTests() {
 		return requiredTests;
 	}
 
-	public List<String> getRequiredCorrections() {
+	public List<StatsConfigConstants.CORRECTION_VALUES> getRequiredCorrections() {
 		return requiredCorrections;
 	}
 
@@ -231,11 +319,11 @@ public class StatsConfig {
 		return selectByMeasure;
 	}
 
-	public HashMap<String, Double> getSignificanceLevels() {
+	public HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES, Double> getSignificanceLevels() {
 		return significanceLevels;
 	}
 
-	public String getFixIndependentVariable() {
+	public StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES getFixIndependentVariable() {
 		return fixIndependentVariable;
 	}
 
