@@ -847,11 +847,11 @@ public class ExternalResultsReader{
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
 	 */
-	public static void evaluateCV(StatsConfig config, String pathToCsvFile, String separator) {
+	public static void evaluateCV(StatsConfig config, String pathToCsvFile, String outputPath, String separator) {
 		logger.log(Level.INFO, "Starting evaluation of data from a simple cross-validation.");
 
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		evaluate(config, pathToCsvFile, separator, ReportTypes.CV, pipelineMetadata);
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.CV, pipelineMetadata);
 	}
 
 	/**
@@ -860,12 +860,12 @@ public class ExternalResultsReader{
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
 	 */
-	public static void evaluateRepeatedCV(StatsConfig config, String pathToCsvFile, String separator, int nFolds) {
+	public static void evaluateRepeatedCV(StatsConfig config, String pathToCsvFile, String outputPath, String separator, int nFolds) {
 		logger.log(Level.INFO, "Starting evaluation of data from a repeated cross-validation.");
 		
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
 		pipelineMetadata.put("nFolds", nFolds);
-		evaluate(config, pathToCsvFile, separator, ReportTypes.MULTIPLE_CV, pipelineMetadata);
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.MULTIPLE_CV, pipelineMetadata);
 	}
 
 	/*
@@ -891,21 +891,21 @@ public class ExternalResultsReader{
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
 	 */
-	public static void evaluateTrainTest(StatsConfig config, String pathToCsvFile, String separator) {
+	public static void evaluateTrainTest(StatsConfig config, String pathToCsvFile, String outputPath, String separator) {
 		logger.log(Level.INFO, "Starting evaluation of data from a Train-Test scenario.");
 
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		evaluate(config, pathToCsvFile, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, pipelineMetadata);
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, pipelineMetadata);
 	}
 
-	public static void evaluate(StatsConfig config, String pathToCsvFile, String separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
+	public static void evaluate(StatsConfig config, String pathToCsvFile, String outputPath, String separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
 
 		ArrayList<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
 		SampleData sampleData = interpretCSV(config, rows, pipelineType, pipelineMetadata);
 		List<SampleData> splittedSamples = splitData(sampleData, config);
 
 		Statistics stats = new Statistics(config);
-		String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
+		//String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
 
 		for(int i=0; i<splittedSamples.size(); i++){
 			
@@ -968,6 +968,10 @@ public class ExternalResultsReader{
 	private static void createEvaluationReport(String pathToDirectory, EvaluationResults evalResults) {
 
 		try {
+			/*
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			String localPath = classLoader.getResource(".").getPath();
+			*/
 			File directory = new File(pathToDirectory);
 			if (!directory.isDirectory()) {
 				directory.getParent();

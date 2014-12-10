@@ -1,4 +1,4 @@
-package de.tudarmstadt.tk.statistics.unittest;
+package de.tudarmstadt.tk.statistics.examples;
 
 /**
  * Copyright 2014
@@ -28,7 +28,7 @@ import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.importer.ExternalResultsReader;
 
-public class EvaluationTester {
+public class ExampleResultReader {
 	
 	@Test
 	public void testCVInput(){
