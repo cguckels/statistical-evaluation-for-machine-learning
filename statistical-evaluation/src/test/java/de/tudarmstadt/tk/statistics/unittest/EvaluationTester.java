@@ -67,8 +67,8 @@ public class EvaluationTester {
 		
 		StatsConfig config = StatsConfig.getInstance(requiredTests, requiredCorrections, significanceLevels, selectBestN, selectByMeasure, fixIndependentVariable);
 		
-		String csvPath = "/Users/worldwindow/GITs/statistical-evaluation-for-machine-learning/statistical-evaluation/PerformancesDemoFile.csv";
-		
+		String csvPath = "/Users/worldwindow/GITs/statistical-evaluation-for-machine-learning/statistical-evaluation/src/main/resources/examples/PerformancesDemoFile2IVClassifiersBaseline.csv";
+
 		ExternalResultsReader.evaluateCV(config, csvPath, ";");		
 		
 	}

@@ -52,6 +52,9 @@ public class SampleData {
 
 	// Metadata of the models (classifier, feature set)
 	private ArrayList<Pair<String, String>> modelMetadata;
+	
+	// Metadata of baseline models (can be >1 if both classifier and feature sets are independent variables)
+	private ArrayList<Pair<String, String>> baselineModelMetadata;
 
 	// Number of folds in case of a CV
 	private int nFolds;
@@ -60,8 +63,8 @@ public class SampleData {
 	private int nRepetitions;
 
 	// Indicates if this is a nxn or 1:n baseline evaluation
-	private boolean isBaselineEvaluation;
-
+	private boolean isBaselineEvaluation=false;
+	
 	/**
 	 * Creates an object he entire sample information for a particular pipeline
 	 * run
@@ -87,10 +90,10 @@ public class SampleData {
 			HashMap<String, ArrayList<Double>> samplesAverage,
 			List<Pair<String, String>> datasetNames,
 			ArrayList<Pair<String,String>> modelMetadata,
+			ArrayList<Pair<String, String>> baselineModelMetadata,
 			ReportTypes pipelineType,
 			int nFolds,
-			int nRepetitions,
-			boolean isBaselineEvaluation) {
+			int nRepetitions) {
 		this.contingencyMatrix=contingencyMatrix;
 		this.samples = samples;
 		this.samplesAverage = samplesAverage;
@@ -99,7 +102,10 @@ public class SampleData {
 		this.pipelineType = pipelineType;
 		this.nFolds = nFolds;
 		this.nRepetitions = nRepetitions;
-		this.isBaselineEvaluation = isBaselineEvaluation;
+		this.baselineModelMetadata=baselineModelMetadata;
+		if(this.baselineModelMetadata.size()>0){
+			this.isBaselineEvaluation = true;
+		}
 	}
 
 	public int[][] getContingencyMatrix() {
@@ -137,4 +143,14 @@ public class SampleData {
 	public boolean isBaselineEvaluation() {
 		return isBaselineEvaluation;
 	}
+
+	public ArrayList<Pair<String, String>> getBaselineModelMetadata() {
+		return baselineModelMetadata;
+	}
+
+	public void setBaselineModelMetadata(
+			ArrayList<Pair<String, String>> baselineModelMetadata) {
+		this.baselineModelMetadata = baselineModelMetadata;
+	}
+	
 }

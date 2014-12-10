@@ -42,6 +42,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -601,9 +602,7 @@ public class ExternalResultsReader{
 			ArrayList<String> measures = new ArrayList<String>();
 			ArrayList<Pair<String, String>> datasets = new ArrayList<Pair<String, String>>();
 			ArrayList<Pair<String, String>> models = new ArrayList<Pair<String, String>>();
-			Pair<String, String> baselineModel = null;
-			Set<String> fsSet = new HashSet<String>();
-			Set<String> cSet = new HashSet<String>();
+			ArrayList<Pair<String, String>> baselineModels = new ArrayList<Pair<String,String>>();
 
 			for (int i = 0; i < rows.size(); i++) {
 				String[] columns = rows.get(i);
@@ -614,11 +613,9 @@ public class ExternalResultsReader{
 				String featureSets = columns[3];
 				Pair<String, String> model = Pair.of(classifier,featureSets);
 				if (!models.contains(model)) {
-					fsSet.add(featureSets);
-					cSet.add(classifier);
 					models.add(model);
-					if(baselineModel==null && Integer.parseInt(columns[6])==1){
-						baselineModel = model;
+					if(!baselineModels.contains(model) && Integer.parseInt(columns[6])==1){
+						baselineModels.add(model);
 					}
 				}
 				if (!measures.contains(columns[4])) {
@@ -654,20 +651,6 @@ public class ExternalResultsReader{
 				}
 				samplesPerMeasure.put(i, samplesPerModel);
 			}
-			
-	/*
-			//Only separate data if there's more than one independent variable
-			if(fsSet.size()>1 && cSet.size()>1){
-				HashMap<String, SampleData> temp = new HashMap<String,SampleData>();
-				if(config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier){
-					
-				}
-			}
-			*/
-			
-			
-			
-			
 
 			// Assign samples to different models
 			for (int i = 0; i < rows.size(); i++) {
@@ -756,20 +739,106 @@ public class ExternalResultsReader{
 				return null;
 			}	
 			
-			//Default: no baseline evaluation
-			boolean isBaselineEvaluation = (baselineModel == null) ? false : true;
+			
 			//Reorder data in case of a baseline evaluation (baseline first)
-			if(isBaselineEvaluation){
-				models.remove(baselineModel);
+			if(baselineModels.size()==1){
+				Pair<String,String> baselineModel = baselineModels.get(0);
+				int modelIndex = models.indexOf(baselineModel);
+				models.remove(modelIndex);
 				models.add(0,baselineModel);
+				for(String measure:indexedSamples.keySet()){
+					ArrayList<Double> s = indexedSamples.get(measure).get(modelIndex);
+					indexedSamples.get(measure).remove(modelIndex);
+					indexedSamples.get(measure).add(0,s);
+					double a = indexedSamplesAverage.get(measure).get(modelIndex);
+					indexedSamplesAverage.get(measure).remove(modelIndex);
+					indexedSamplesAverage.get(measure).add(0,a);
+				}
 			}
 			
-			SampleData sampleData = new SampleData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions, isBaselineEvaluation);
+			SampleData sampleData = new SampleData(null,indexedSamples,indexedSamplesAverage,datasets,models,baselineModels,pipelineType,nFolds,nRepetitions);
 			sampleData = Helpers.truncateData(sampleData, selectBestN, selectByMeasure);
 			
 			return sampleData;
 		}
 		return null;
+	}
+	
+	public static List<SampleData> splitData(SampleData data, StatsConfig config){
+
+		List<SampleData> splitted = new ArrayList<SampleData>();
+		
+		//Use lists instead of sets to maintain order of model metadata
+		ArrayList<String> featureSets = new ArrayList<String>();
+		ArrayList<String> classifiers = new ArrayList<String>();
+		for(Pair<String,String> metadata:data.getModelMetadata()){
+			if(!classifiers.contains(metadata.getLeft())){
+				classifiers.add(metadata.getLeft());
+			}
+			if(!featureSets.contains(metadata.getRight())){
+				featureSets.add(metadata.getRight());
+			}
+		}
+		
+		//Only separate data if there's more than one independent variable
+		if(!(featureSets.size()>1 && classifiers.size()>1)){
+			splitted.add(data);
+			return splitted;
+		}
+		
+		List<String> it = (config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier) ? classifiers : featureSets;
+		for(String fixed: it){
+			ArrayList<Pair<String,String>> modelMetadata = new ArrayList<Pair<String,String>>();
+			HashMap<String,ArrayList<ArrayList<Double>>> samples = new HashMap<String,ArrayList<ArrayList<Double>>>();
+			HashMap<String,ArrayList<Double>> sampleAverages = new HashMap<String,ArrayList<Double>>();
+			for(int i=0; i<data.getModelMetadata().size(); i++){
+				Pair<String,String> model = data.getModelMetadata().get(i);
+				boolean eq = (config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier) ? model.getLeft().equals(fixed) : model.getRight().equals(fixed);
+				if(eq){
+					modelMetadata.add(model);
+					for(String measure:data.getSamples().keySet()){
+						if(!samples.containsKey(measure)){
+							samples.put(measure, new ArrayList<ArrayList<Double>>());
+							sampleAverages.put(measure, new ArrayList<Double>());
+						}
+						samples.get(measure).add(data.getSamples().get(measure).get(i));
+						sampleAverages.get(measure).add(data.getSamplesAverage().get(measure).get(i));
+					}
+				}
+			}
+			ArrayList<Pair<String,String>> baselineModelData = new ArrayList<Pair<String,String>>();
+			if(data.isBaselineEvaluation()){
+				Pair<String,String> baselineModel = null;
+				for(int i=0; i<data.getBaselineModelMetadata().size(); i++){
+					boolean eq = (config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier) ? data.getBaselineModelMetadata().get(i).getLeft().equals(fixed) : data.getBaselineModelMetadata().get(i).getRight().equals(fixed);
+					if(eq){
+						baselineModel = data.getBaselineModelMetadata().get(i);
+						break;
+					}
+				}
+				if(baselineModel!=null){
+					baselineModelData.add(baselineModel);
+					int modelIndex = modelMetadata.indexOf(baselineModel);
+					modelMetadata.remove(modelIndex);
+					modelMetadata.add(0,baselineModel);
+					for(String measure:data.getSamples().keySet()){
+						ArrayList<Double> s = samples.get(measure).get(modelIndex);
+						samples.get(measure).remove(modelIndex);
+						samples.get(measure).add(0,s);
+						double a = sampleAverages.get(measure).get(modelIndex);
+						sampleAverages.get(measure).remove(modelIndex);
+						sampleAverages.get(measure).add(0,a);
+					}
+				}else{
+					logger.log(Level.ERROR, "Missing baseline model! Please check if baseline indicators are set correctly in the input file. In case of both varying feature sets and classifiers, baseline indicators have to be set multiple times.");
+					System.err.println("Missing baseline model! Please check if baseline indicators are set correctly in the input file. In case of both varying feature sets and classifiers, baseline indicators have to be set multiple times.");
+					System.exit(1);
+				}
+			}
+			SampleData newData = new SampleData(null, samples, sampleAverages, data.getDatasetNames(), modelMetadata, baselineModelData, data.getPipelineType(), data.getnFolds(), data.getnRepetitions());	
+			splitted.add(newData);
+		}
+		return splitted;
 	}
 
 	/**
@@ -833,14 +902,23 @@ public class ExternalResultsReader{
 
 		ArrayList<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
 		SampleData sampleData = interpretCSV(config, rows, pipelineType, pipelineMetadata);
+		List<SampleData> splittedSamples = splitData(sampleData, config);
 
-		// Perform statistical evaluation of data
 		Statistics stats = new Statistics(config);
-		EvaluationResults evalResults = stats.performStatisticalEvaluation(sampleData);
 		String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
-		
-		createEvaluationReport(outputPath, evalResults);
 
+		for(int i=0; i<splittedSamples.size(); i++){
+			
+			SampleData samples = splittedSamples.get(i);
+	
+			EvaluationResults evalResults = stats.performStatisticalEvaluation(samples);
+						
+			if(evalResults==null){
+				continue;
+			}
+			createEvaluationReport(outputPath, evalResults);
+			
+		}	
 	}
 
 	/**
@@ -894,6 +972,9 @@ public class ExternalResultsReader{
 			if (!directory.isDirectory()) {
 				directory.getParent();
 			}
+			directory = new File(directory, "Report"+UUID.randomUUID());
+			directory.mkdir();
+			
 			File latexFile = new File(directory, "statisticalReport.tex");
 			File plainFile = new File(directory, "statisticalReport.txt");
 			
