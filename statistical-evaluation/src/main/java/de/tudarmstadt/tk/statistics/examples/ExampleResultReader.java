@@ -69,7 +69,7 @@ public class ExampleResultReader {
 		
 		String csvPath = "src/main/resources/examples/PerformancesDemoFile2IVClassifiersBaseline.csv";
 		String outputPath = "src/main/resources/examples/";
-		ExternalResultsReader.evaluateCV(config, csvPath, outputPath, ";");		
+		ExternalResultsReader.evaluateCV(config, csvPath, outputPath, ';');		
 		
 	}
 
