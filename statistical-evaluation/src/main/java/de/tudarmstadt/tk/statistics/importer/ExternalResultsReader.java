@@ -35,13 +35,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -50,6 +49,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import au.com.bytecode.opencsv.CSVReader;
 import de.tudarmstadt.tk.statistics.config.ReportTypes;
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
@@ -99,12 +99,8 @@ public class ExternalResultsReader{
 		ArrayList<String> outputRows = new ArrayList<String>();
 
 		// iterate all rows
-		ArrayList<String[]> inputRowsFirstFile = new ArrayList<>();
-		try {
-			inputRowsFirstFile = CSVReader.parseSampleData(filePath);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
+		List<String[]> inputRowsFirstFile = new ArrayList<>();
+		inputRowsFirstFile = readAndCheckCSV(filePath,';');
 
 		// first: order by train set
 		ArrayList<ExternalResults> extResults = new ArrayList<>();
@@ -250,12 +246,8 @@ public class ExternalResultsReader{
 		ArrayList<String> outputRows = new ArrayList<String>();
 
 		// iterate all rows
-		ArrayList<String[]> inputRowsFirstFile = new ArrayList<>();
-		try {
-			inputRowsFirstFile = CSVReader.parseSampleData(filePath);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
+		List<String[]> inputRowsFirstFile = new ArrayList<>();
+		inputRowsFirstFile = readAndCheckCSV(filePath,';');
 
 		// first: order by train set
 		ArrayList<ExternalResults> extResults = new ArrayList<>();
@@ -465,7 +457,7 @@ public class ExternalResultsReader{
 				ArrayList<HashMap<String, Object>> values = new ArrayList<>();
 
 				// get rows for first file to initialize store
-				ArrayList<String[]> inputRowsFirstFile = readAndCheckCSV(testFiles.get(0).getAbsolutePath(), ";");
+				List<String[]> inputRowsFirstFile = readAndCheckCSV(testFiles.get(0).getAbsolutePath(), ';');
 
 				for (int i = 0; i < inputRowsFirstFile.size(); i++) {
 					HashMap<String, Object> currentRowValues = new HashMap<>();
@@ -483,7 +475,7 @@ public class ExternalResultsReader{
 						continue;
 					}
 					// check file for consistency
-					ArrayList<String[]> inputRows = readAndCheckCSV(testFile.getAbsolutePath(), ";");
+					List<String[]> inputRows = readAndCheckCSV(testFile.getAbsolutePath(), ';');
 
 					// check if length matches first file
 					if (!(inputRows.size() == values.size())) {
@@ -585,7 +577,7 @@ public class ExternalResultsReader{
 
 	}
 
-	public static SampleData interpretCSV(StatsConfig config, ArrayList<String[]> rows, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
+	public static SampleData interpretCSV(StatsConfig config, List<String[]> rows, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
 
 		HashMap<Integer, ArrayList<ArrayList<Double>>> samplesPerMeasure = new HashMap<Integer, ArrayList<ArrayList<Double>>>();
 
@@ -601,9 +593,7 @@ public class ExternalResultsReader{
 			ArrayList<String> measures = new ArrayList<String>();
 			ArrayList<Pair<String, String>> datasets = new ArrayList<Pair<String, String>>();
 			ArrayList<Pair<String, String>> models = new ArrayList<Pair<String, String>>();
-			Pair<String, String> baselineModel = null;
-			Set<String> fsSet = new HashSet<String>();
-			Set<String> cSet = new HashSet<String>();
+			ArrayList<Pair<String, String>> baselineModels = new ArrayList<Pair<String,String>>();
 
 			for (int i = 0; i < rows.size(); i++) {
 				String[] columns = rows.get(i);
@@ -614,11 +604,9 @@ public class ExternalResultsReader{
 				String featureSets = columns[3];
 				Pair<String, String> model = Pair.of(classifier,featureSets);
 				if (!models.contains(model)) {
-					fsSet.add(featureSets);
-					cSet.add(classifier);
 					models.add(model);
-					if(baselineModel==null && Integer.parseInt(columns[6])==1){
-						baselineModel = model;
+					if(!baselineModels.contains(model) && Integer.parseInt(columns[6])==1){
+						baselineModels.add(model);
 					}
 				}
 				if (!measures.contains(columns[4])) {
@@ -654,20 +642,6 @@ public class ExternalResultsReader{
 				}
 				samplesPerMeasure.put(i, samplesPerModel);
 			}
-			
-	/*
-			//Only separate data if there's more than one independent variable
-			if(fsSet.size()>1 && cSet.size()>1){
-				HashMap<String, SampleData> temp = new HashMap<String,SampleData>();
-				if(config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier){
-					
-				}
-			}
-			*/
-			
-			
-			
-			
 
 			// Assign samples to different models
 			for (int i = 0; i < rows.size(); i++) {
@@ -756,20 +730,106 @@ public class ExternalResultsReader{
 				return null;
 			}	
 			
-			//Default: no baseline evaluation
-			boolean isBaselineEvaluation = (baselineModel == null) ? false : true;
+			
 			//Reorder data in case of a baseline evaluation (baseline first)
-			if(isBaselineEvaluation){
-				models.remove(baselineModel);
+			if(baselineModels.size()==1){
+				Pair<String,String> baselineModel = baselineModels.get(0);
+				int modelIndex = models.indexOf(baselineModel);
+				models.remove(modelIndex);
 				models.add(0,baselineModel);
+				for(String measure:indexedSamples.keySet()){
+					ArrayList<Double> s = indexedSamples.get(measure).get(modelIndex);
+					indexedSamples.get(measure).remove(modelIndex);
+					indexedSamples.get(measure).add(0,s);
+					double a = indexedSamplesAverage.get(measure).get(modelIndex);
+					indexedSamplesAverage.get(measure).remove(modelIndex);
+					indexedSamplesAverage.get(measure).add(0,a);
+				}
 			}
 			
-			SampleData sampleData = new SampleData(null,indexedSamples,indexedSamplesAverage,datasets,models,pipelineType,nFolds,nRepetitions, isBaselineEvaluation);
+			SampleData sampleData = new SampleData(null,indexedSamples,indexedSamplesAverage,datasets,models,baselineModels,pipelineType,nFolds,nRepetitions);
 			sampleData = Helpers.truncateData(sampleData, selectBestN, selectByMeasure);
 			
 			return sampleData;
 		}
 		return null;
+	}
+	
+	public static List<SampleData> splitData(SampleData data, StatsConfig config){
+
+		List<SampleData> splitted = new ArrayList<SampleData>();
+		
+		//Use lists instead of sets to maintain order of model metadata
+		ArrayList<String> featureSets = new ArrayList<String>();
+		ArrayList<String> classifiers = new ArrayList<String>();
+		for(Pair<String,String> metadata:data.getModelMetadata()){
+			if(!classifiers.contains(metadata.getLeft())){
+				classifiers.add(metadata.getLeft());
+			}
+			if(!featureSets.contains(metadata.getRight())){
+				featureSets.add(metadata.getRight());
+			}
+		}
+		
+		//Only separate data if there's more than one independent variable
+		if(!(featureSets.size()>1 && classifiers.size()>1)){
+			splitted.add(data);
+			return splitted;
+		}
+		
+		List<String> it = (config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier) ? classifiers : featureSets;
+		for(String fixed: it){
+			ArrayList<Pair<String,String>> modelMetadata = new ArrayList<Pair<String,String>>();
+			HashMap<String,ArrayList<ArrayList<Double>>> samples = new HashMap<String,ArrayList<ArrayList<Double>>>();
+			HashMap<String,ArrayList<Double>> sampleAverages = new HashMap<String,ArrayList<Double>>();
+			for(int i=0; i<data.getModelMetadata().size(); i++){
+				Pair<String,String> model = data.getModelMetadata().get(i);
+				boolean eq = (config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier) ? model.getLeft().equals(fixed) : model.getRight().equals(fixed);
+				if(eq){
+					modelMetadata.add(model);
+					for(String measure:data.getSamples().keySet()){
+						if(!samples.containsKey(measure)){
+							samples.put(measure, new ArrayList<ArrayList<Double>>());
+							sampleAverages.put(measure, new ArrayList<Double>());
+						}
+						samples.get(measure).add(data.getSamples().get(measure).get(i));
+						sampleAverages.get(measure).add(data.getSamplesAverage().get(measure).get(i));
+					}
+				}
+			}
+			ArrayList<Pair<String,String>> baselineModelData = new ArrayList<Pair<String,String>>();
+			if(data.isBaselineEvaluation()){
+				Pair<String,String> baselineModel = null;
+				for(int i=0; i<data.getBaselineModelMetadata().size(); i++){
+					boolean eq = (config.getFixIndependentVariable()==StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier) ? data.getBaselineModelMetadata().get(i).getLeft().equals(fixed) : data.getBaselineModelMetadata().get(i).getRight().equals(fixed);
+					if(eq){
+						baselineModel = data.getBaselineModelMetadata().get(i);
+						break;
+					}
+				}
+				if(baselineModel!=null){
+					baselineModelData.add(baselineModel);
+					int modelIndex = modelMetadata.indexOf(baselineModel);
+					modelMetadata.remove(modelIndex);
+					modelMetadata.add(0,baselineModel);
+					for(String measure:data.getSamples().keySet()){
+						ArrayList<Double> s = samples.get(measure).get(modelIndex);
+						samples.get(measure).remove(modelIndex);
+						samples.get(measure).add(0,s);
+						double a = sampleAverages.get(measure).get(modelIndex);
+						sampleAverages.get(measure).remove(modelIndex);
+						sampleAverages.get(measure).add(0,a);
+					}
+				}else{
+					logger.log(Level.ERROR, "Missing baseline model! Please check if baseline indicators are set correctly in the input file, and if they correspond correctly to the fixIndependentVariable property in the configuration. In case of both varying feature sets and classifiers, baseline indicators have to be set multiple times.");
+					System.err.println("Missing baseline model! Please check if baseline indicators are set correctly in the input file, and if they correspond correctly to the fixIndependentVariable property in the configuration. In case of both varying feature sets and classifiers, baseline indicators have to be set multiple times.");
+					System.exit(1);
+				}
+			}
+			SampleData newData = new SampleData(null, samples, sampleAverages, data.getDatasetNames(), modelMetadata, baselineModelData, data.getPipelineType(), data.getnFolds(), data.getnRepetitions());	
+			splitted.add(newData);
+		}
+		return splitted;
 	}
 
 	/**
@@ -778,11 +838,11 @@ public class ExternalResultsReader{
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
 	 */
-	public static void evaluateCV(StatsConfig config, String pathToCsvFile, String separator) {
+	public static void evaluateCV(StatsConfig config, String pathToCsvFile, String outputPath, char separator) {
 		logger.log(Level.INFO, "Starting evaluation of data from a simple cross-validation.");
 
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		evaluate(config, pathToCsvFile, separator, ReportTypes.CV, pipelineMetadata);
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.CV, pipelineMetadata);
 	}
 
 	/**
@@ -791,12 +851,12 @@ public class ExternalResultsReader{
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
 	 */
-	public static void evaluateRepeatedCV(StatsConfig config, String pathToCsvFile, String separator, int nFolds) {
+	public static void evaluateRepeatedCV(StatsConfig config, String pathToCsvFile, String outputPath, char separator, int nFolds) {
 		logger.log(Level.INFO, "Starting evaluation of data from a repeated cross-validation.");
 		
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
 		pipelineMetadata.put("nFolds", nFolds);
-		evaluate(config, pathToCsvFile, separator, ReportTypes.MULTIPLE_CV, pipelineMetadata);
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.MULTIPLE_CV, pipelineMetadata);
 	}
 
 	/*
@@ -822,25 +882,34 @@ public class ExternalResultsReader{
 	 * @param pathToCsvFile The path to the external data file.
 	 * @param separator The character used to separate columns in the file.
 	 */
-	public static void evaluateTrainTest(StatsConfig config, String pathToCsvFile, String separator) {
+	public static void evaluateTrainTest(StatsConfig config, String pathToCsvFile, String outputPath, char separator) {
 		logger.log(Level.INFO, "Starting evaluation of data from a Train-Test scenario.");
 
 		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		evaluate(config, pathToCsvFile, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, pipelineMetadata);
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, pipelineMetadata);
 	}
 
-	public static void evaluate(StatsConfig config, String pathToCsvFile, String separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
+	public static void evaluate(StatsConfig config, String pathToCsvFile, String outputPath, char separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
 
-		ArrayList<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
+		List<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
 		SampleData sampleData = interpretCSV(config, rows, pipelineType, pipelineMetadata);
+		List<SampleData> splittedSamples = splitData(sampleData, config);
 
-		// Perform statistical evaluation of data
 		Statistics stats = new Statistics(config);
-		EvaluationResults evalResults = stats.performStatisticalEvaluation(sampleData);
-		String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
-		
-		createEvaluationReport(outputPath, evalResults);
+		//String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
 
+		for(int i=0; i<splittedSamples.size(); i++){
+			
+			SampleData samples = splittedSamples.get(i);
+	
+			EvaluationResults evalResults = stats.performStatisticalEvaluation(samples);
+						
+			if(evalResults==null){
+				continue;
+			}
+			createEvaluationReport(outputPath, evalResults);
+			
+		}	
 	}
 
 	/**
@@ -850,34 +919,33 @@ public class ExternalResultsReader{
 	 * @param pathToCsvFile the path to the .csv file
 	 * @param separator the separator to be used to split a line in separate cells, each relating to one column ArrayList<String[]> containing all lines split into tokens
 	 */
-	private static ArrayList<String[]> readAndCheckCSV(String pathToCsvFile, String separator) {
-		ArrayList<String[]> data = new ArrayList<String[]>();
+	private static List<String[]> readAndCheckCSV(String pathToCsvFile, char separator) {
+		List<String[]> rows = new ArrayList<String[]>();
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File(pathToCsvFile)));
+		    CSVReader reader = new CSVReader(new FileReader(pathToCsvFile),separator);
+		    rows = reader.readAll();
+			reader.close();
 
-			String[] header = reader.readLine().split(separator, -1);
-			int nColumns = header.length;
-			data.add(header);
-
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String[] tokens = line.split(separator, -1);
-				data.add(tokens);
-				if (nColumns != tokens.length) {
-					System.err.println(".csv file corrup: number of columns not same for each row.");
-					reader.close();
-					return null;
+			if(rows.size()>0){
+				for(String[] row: rows){
+					if(row.length!=rows.get(0).length){
+						logger.log(Level.ERROR, ".csv file corrup: number of columns not same for each row.");
+						System.err.println(".csv file corrup: number of columns not same for each row.");
+						System.exit(1);
+					}
 				}
 			}
-			reader.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
+			logger.log(Level.ERROR, "Input .csv file not found!");
+			System.err.println("Input .csv file not found!");
+			System.exit(1);		
 		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+				logger.log(Level.ERROR, "Exception while reading input data .csv!");
+				System.err.println("Exception while reading input data .csv!");
+				e.printStackTrace();
+				System.exit(1);		
 		}
-		return data;
+		return rows;
 	}
 
 	/**
@@ -894,6 +962,9 @@ public class ExternalResultsReader{
 			if (!directory.isDirectory()) {
 				directory.getParent();
 			}
+			directory = new File(directory, "Report"+UUID.randomUUID());
+			directory.mkdir();
+			
 			File latexFile = new File(directory, "statisticalReport.tex");
 			File plainFile = new File(directory, "statisticalReport.txt");
 			

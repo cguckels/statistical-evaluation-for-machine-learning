@@ -1,2 +1,8 @@
 /target/
 *.png
+*.tex
+*.aux
+*.txt
+*.log
+*.pdf
+*.synctex.gz
