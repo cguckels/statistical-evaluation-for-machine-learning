@@ -361,7 +361,7 @@ public class ExternalResultsReader{
 		logger.log(Level.INFO, String.format("Finished import. The aggregated data was written to %s.",outFileName));
 	}
 	
-	public static void readAxelTrainTest(String pathToDirectory) {
+	public static void readLODPipelineTrainTest(String pathToDirectory) {
 		Locale.setDefault(Locale.ENGLISH);
 				
 		String[] semanticFeatures = new String[] { "Baseline", "+ALL", "+LOC", "+TIME", "+LOD", "+LOC+TIME", "+LOC+LOD", "+TIME+LOD", "+TYPES", "+CAT" };

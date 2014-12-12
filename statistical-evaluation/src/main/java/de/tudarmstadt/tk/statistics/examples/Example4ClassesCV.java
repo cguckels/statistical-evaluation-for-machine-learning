@@ -1,4 +1,4 @@
-package de.tudarmstadt.tk.statistics.unittest;
+package de.tudarmstadt.tk.statistics.examples;
 
 /**
  * Copyright 2014
@@ -28,7 +28,7 @@ import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.importer.ExternalResultsReader;
 
-public class EvaluationTester {
+public class Example4ClassesCV {
 	
 	@Test
 	public void testCVInput(){
@@ -60,18 +60,16 @@ public class EvaluationTester {
 		significanceLevels.put(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.medium, 0.05);
 		significanceLevels.put(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.high, 0.01);
 
-		StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable = StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier;
+		StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable = StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.FeatureSet;
 
 		int selectBestN = 10;
 		String selectByMeasure = "Weighted F-Measure";
 		
 		StatsConfig config = StatsConfig.getInstance(requiredTests, requiredCorrections, significanceLevels, selectBestN, selectByMeasure, fixIndependentVariable);
 		
-		//String csvPath = "src/main/resources/examples/PerformancesDemoFile2IVClassifiersBaseline.csv";
-		String csvPath = "src/main/resources/examples/statistics_eval.csv";
-
+		String csvPath = "src/main/resources/examples/4ClassesCVExample.csv";
 		String outputPath = "src/main/resources/examples/";
-		ExternalResultsReader.evaluateCV(config, csvPath, outputPath, ';');		
+		ExternalResultsReader.evaluateTrainTest(config, csvPath, outputPath, ';');		
 		
 	}
 
