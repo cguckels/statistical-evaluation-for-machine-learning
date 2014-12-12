@@ -44,6 +44,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -683,6 +684,26 @@ public class ExternalResultsReader{
 				indexedSamplesAverage.put(measures.get(measureIndex), sampleAverages);
 				indexedSamples.put(measures.get(measureIndex), samplesPerMeasure.get(measureIndex));
 			}
+			
+			// Check if data fulfills general requirements: > 5 samples for each model, same number of samples per model
+			it = samplesPerMeasure.keySet().iterator();
+			while(it.hasNext()){
+				ArrayList<ArrayList<Double>> samplesPerModel = samplesPerMeasure.get(it.next());
+				int s = samplesPerModel.get(0).size();
+				
+				for(int i=1; i<samplesPerModel.size(); i++){
+					if(samplesPerModel.get(i).size()<5){
+						logger.log(Level.ERROR, "More than 5 samples are needed per model and measure. Aborting.");
+						System.err.println("More than 5 samples are needed per model and measure. Aborting.");
+						System.exit(1);
+					}
+					if(samplesPerModel.get(i).size()!=s){
+						logger.log(Level.ERROR, "Different models are not represented by the same number of samples. Aborting.");
+						System.err.println("Different models are not represented by the same number of samples. Aborting.");
+						System.exit(1);
+					}
+				}
+			}
 
 			// Collect remaining data required for creating a SampleData object
 			// Check if data fulfills requirements of the specific PipelineTypes
@@ -692,24 +713,26 @@ public class ExternalResultsReader{
 			case CV:
 				if (datasets.size() > 1) {
 					System.err.println("Input data corrupted. More than one dataset specified for Single-Domain Cross-Validation.");
+					logger.log(Level.ERROR, "Input data corrupted. More than one dataset specified for Single-Domain Cross-Validation.");
 					return null;
 				} else if (datasets.get(0).getValue() != null) {
 					System.err.println("Input data corrupted. Training and Test dataset must be same for Cross-Validation.");
+					logger.log(Level.ERROR, "Input data corrupted. Training and Test dataset must be same for Cross-Validation.");
 					return null;
 				}
-
 				nFolds = indexedSamples.get(measures.get(0)).get(0).size();
 				nRepetitions = 1;
 				break;
 			case MULTIPLE_CV:
 				if (datasets.size() > 1) {
 					System.err.println("Input data corrupted. More than one dataset specified for Single-Domain Cross-Validation.");
+					logger.log(Level.ERROR, "Input data corrupted. More than one dataset specified for Single-Domain Cross-Validation.");
 					return null;
 				} else if (datasets.get(0).getValue() != null) {
 					System.err.println("Input data corrupted. Training and Test dataset must be same for Cross-Validation.");
+					logger.log(Level.ERROR, "Input data corrupted. Training and Test dataset must be same for Cross-Validation.");
 					return null;
 				}
-
 				nFolds = pipelineMetadata.get("nFolds");
 				nRepetitions = indexedSamples.get(measures.get(0)).get(0).size();
 				break;
@@ -727,6 +750,7 @@ public class ExternalResultsReader{
 				break;
 			default:
 				System.err.println("Unknown PipelineType. Aborting.");
+				logger.log(Level.ERROR, "Unknown PipelineType. Aborting.");
 				return null;
 			}	
 			
@@ -987,5 +1011,10 @@ public class ExternalResultsReader{
 		}
 
 	}
+	
+
+
+	
+	
 
 }

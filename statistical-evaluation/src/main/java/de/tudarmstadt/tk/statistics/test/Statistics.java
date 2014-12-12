@@ -235,7 +235,7 @@ public class Statistics {
 		evalResults.addParametricTestResult(Pair.of(testParametric, (AbstractTestResult) result), measure);
 
 		// If test successful, print result and call post-hoc test
-		if (result != null) {
+		if (result != null && !Double.isNaN(result.getpValue())) {
 			// Perform parametric post-hoc test
 			logger.log(Level.INFO, String.format("Performing parametric post-hoc test: %s", testPostHocParametric));
 			m = RBridge.class.getMethod(String.format("test%s", testPostHocParametric), double[][].class);
@@ -272,34 +272,37 @@ public class Statistics {
 		result = (TestResult) m.invoke(stats, samples);
 		evalResults.addNonParametricTestResult(Pair.of(testNonParametric, (AbstractTestResult) result), measure);
 
-		// Perform non-parametric post-hoc test
-		logger.log(Level.INFO, String.format("Performing non-parametric post-hoc test: %s", testPostHocParametric));
-		m = RBridge.class.getMethod(String.format("test%s", testPostHocNonParametric), double[][].class);
-		PairwiseTestResult postHocResult = (PairwiseTestResult) m.invoke(stats, samples);
-
-		if (postHocResult.getRequiresPValueCorrection()) {
-			for (StatsConfigConstants.CORRECTION_VALUES s : requiredCorrections) {
-				postHocResult.addPValueCorrections(s, stats.adjustP(postHocResult, s));
+		// If test successful, print result and call non-parametric post-hoc test
+		if (result != null && !Double.isNaN(result.getpValue())) {
+			logger.log(Level.INFO, String.format("Performing non-parametric post-hoc test: %s", testPostHocParametric));
+			m = RBridge.class.getMethod(String.format("test%s", testPostHocNonParametric), double[][].class);
+			PairwiseTestResult postHocResult = (PairwiseTestResult) m.invoke(stats, samples);
+	
+			if (postHocResult.getRequiresPValueCorrection()) {
+				for (StatsConfigConstants.CORRECTION_VALUES s : requiredCorrections) {
+					postHocResult.addPValueCorrections(s, stats.adjustP(postHocResult, s));
+				}
 			}
+			
+			// Determine ordering of significant differences between models,
+			// based on unadjusted(!) p-values
+			logger.log(Level.INFO, "Calculating chain of statistical significance via topological ordering");
+			ImprovedDirectedGraph<Integer, DefaultEdge> graph = createSignificanceGraph(postHocResult, averageSamplesPerModel);
+			HashMap<Integer, TreeSet<Integer>> ordering = calcOrderOfSignificantDifferences(graph);
+			Set<DefaultEdge> e = graph.edgeSet();
+			int[][] edgelist = new int[2][e.size()];
+			int i = 0;
+			for (DefaultEdge edge : e) {
+				edgelist[0][i] = graph.getEdgeSource(edge);
+				edgelist[1][i] = graph.getEdgeTarget(edge);
+				i++;
+			}
+			evalResults.getNonParameticPostHocOrdering().put(measure, ordering);
+			evalResults.getNonParameticPostHocEdgelist().put(measure, edgelist);
+			
+			evalResults.addNonParametricPostHocTestResult(Pair.of(testPostHocNonParametric, (AbstractTestResult) postHocResult), measure);
 		}
 
-		// Determine ordering of significant differences between models,
-		// based on unadjusted(!) p-values
-		logger.log(Level.INFO, "Calculating chain of statistical significance via topological ordering");
-		ImprovedDirectedGraph<Integer, DefaultEdge> graph = createSignificanceGraph(postHocResult, averageSamplesPerModel);
-		HashMap<Integer, TreeSet<Integer>> ordering = calcOrderOfSignificantDifferences(graph);
-		Set<DefaultEdge> e = graph.edgeSet();
-		int[][] edgelist = new int[2][e.size()];
-		int i = 0;
-		for (DefaultEdge edge : e) {
-			edgelist[0][i] = graph.getEdgeSource(edge);
-			edgelist[1][i] = graph.getEdgeTarget(edge);
-			i++;
-		}
-		evalResults.getNonParameticPostHocOrdering().put(measure, ordering);
-		evalResults.getNonParameticPostHocEdgelist().put(measure, edgelist);
-
-		evalResults.addNonParametricPostHocTestResult(Pair.of(testPostHocNonParametric, (AbstractTestResult) postHocResult), measure);
 	}
 
 	/**
