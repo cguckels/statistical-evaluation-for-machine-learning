@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.test.PairwiseTestResult;
-import de.tudarmstadt.tk.statistics.test.RBridge;
+import de.tudarmstadt.tk.statistics.test.Statistics;
 import de.tudarmstadt.tk.statistics.test.TestResult;
 
 /**
@@ -65,7 +65,7 @@ public class RStatsTester {
 
 	@Test
 	public void testPlotting() {
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		stats.plotGraph(new int[][] { { 1, 2, 3, 4, 5, 6 }, { 2, 3, 4, 5, 6, 1 } }, 8, "graph");
 		stats.plotQQNorm(new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 }, "M3", "F-Measure", "qqPlot");
 		stats.plotBoxWhisker(new double[][] { { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 }, { 0.3, 0.4, 0.5, 0.7, 0.6, 0.3, 0.4 }, { 0.2, 0.3, 0.5, 0.7 } }, "boxWhiskerPlot", "F-Measure");
@@ -84,7 +84,7 @@ public class RStatsTester {
 		double[] classifierC = { 84.19, 85.91, 83.83, 85.11, 86.38, 81.20, 86.38, 86.75, 88.03, 87.18 };
 		double[][] classifiers = { classifierA, classifierB, classifierC };
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		TestResult r = stats.testFriedman(classifiers);
 
 		Assert.assertEquals(0.0005531, r.getpValue(), EPSILON);
@@ -103,7 +103,7 @@ public class RStatsTester {
 		double[] classifierC = { 84.19, 85.91, 83.83, 85.11, 86.38, 81.20, 86.38, 86.75, 88.03, 87.18 };
 		double[][] classifiers = { classifierA, classifierB, classifierC };
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		PairwiseTestResult r = stats.testNemenyi(classifiers);
 
 		double[][] actual = r.getpValue();
@@ -131,7 +131,7 @@ public class RStatsTester {
 		double[] trees = { 6.9, 7.3, 5.8, 4.1, 5.4 };
 		double[][] flies = { herbs, shrubs, trees };
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		PairwiseTestResult r = stats.testNemenyi(flies);
 		double[][] actual = r.getpValue();
 
@@ -154,7 +154,7 @@ public class RStatsTester {
 		 */
 		int[][] contingencies = { { 4, 11 }, { 2, 40 } };
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		TestResult r = stats.testMcNemar(contingencies);
 
 		Assert.assertEquals(0.0265, r.getpValue(), EPSILON);
@@ -178,7 +178,7 @@ public class RStatsTester {
 		double[] sampleC = { 2.8, 3.4, 3.7, 2.2, 2.0 }; // with asbestosis
 		double[][] samples = { sampleA, sampleB, sampleC };
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		TestResult r = stats.testKruskalWallis(samples);
 
 		Assert.assertEquals(0.68, r.getpValue(), EPSILON);
@@ -197,7 +197,7 @@ public class RStatsTester {
 		double[] sampleB = { 28, 35, 35, 24, 39, 32, 27, 29, 36, 35 }; // on a
 																		// monday
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		TestResult r = stats.testWilcoxonSignedRank(sampleA, sampleB);
 
 		Assert.assertEquals(0.01151, r.getpValue(), EPSILON);
@@ -214,7 +214,7 @@ public class RStatsTester {
 		double[] sampleA = { 15, 35, 16, 18, 19, 17, 27, 16, 13, 20 }; // ecstasy
 		double[] sampleB = { 16, 15, 20, 15, 16, 13, 14, 19, 18, 18 }; // alcohol
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		TestResult r = stats.testMannWhitneyU(sampleA, sampleB);
 
 		Assert.assertEquals(0.2861, r.getpValue(), EPSILON);
@@ -231,7 +231,7 @@ public class RStatsTester {
 		double[] sampleA = { 30, 35, 45, 40, 50, 35, 55, 25, 30, 45, 40, 50 }; // real
 		double[] sampleB = { 40, 35, 50, 55, 65, 55, 50, 35, 30, 50, 60, 39 }; // pictures
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		TestResult r = stats.testDependentT(sampleA, sampleB);
 
 		Assert.assertEquals(0.03098, r.getpValue(), EPSILON);
@@ -251,7 +251,7 @@ public class RStatsTester {
 		double[] sampleD = { 6, 5, 8, 9, 8, 7, 2, 1 }; // Witchetty grub
 		double[][] samples = { sampleA, sampleB, sampleC, sampleD };
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		TestResult r = stats.testRepeatedMeasuresOneWayANOVA(samples);
 
 		Assert.assertEquals(0.025570, r.getpValue(), EPSILON);
@@ -271,7 +271,7 @@ public class RStatsTester {
 		double[] sampleD = { 6, 5, 8, 9, 8, 7, 2, 1 }; // Witchetty grub
 		double[][] samples = { sampleA, sampleB, sampleC, sampleD };
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		PairwiseTestResult r = stats.testPairwiseDependentT(samples);
 
 		double[][] expected = { { 0.00202 }, { 0.00094, 0.92007 }, { 0.22673, 0.29867, 0.40204 } };
@@ -304,7 +304,7 @@ public class RStatsTester {
 		double[] sampleD = { 6, 5, 8, 9, 8, 7, 2, 1 }; // Witchetty grub
 		double[][] samples = { sampleA, sampleB, sampleC, sampleD };
 
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		PairwiseTestResult r = stats.testPairwiseDependentT(samples);
 
 		double[][] actual = stats.adjustP(r, StatsConfigConstants.CORRECTION_VALUES.bonferroni);

@@ -36,7 +36,7 @@ import de.tudarmstadt.tk.statistics.config.ReportTypes;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.test.AbstractTestResult;
 import de.tudarmstadt.tk.statistics.test.PairwiseTestResult;
-import de.tudarmstadt.tk.statistics.test.RBridge;
+import de.tudarmstadt.tk.statistics.test.Statistics;
 import de.tudarmstadt.tk.statistics.test.TestResult;
 
 /**
@@ -382,7 +382,7 @@ public class EvaluationResultsWriter {
 		// machine
 		Locale.setDefault(Locale.ENGLISH);
 		StringBuilder report = new StringBuilder();
-		RBridge stats = RBridge.getInstance(true);
+		Statistics stats = Statistics.getInstance(true);
 		HashMap<String, String> methodsSummary = new HashMap<String, String>();
 		HashMap<String, HashMap<String, List<String>>> testSummary = new HashMap<String, HashMap<String, List<String>>>();
 		ArrayList<String[]> figures = new ArrayList<String[]>();

@@ -45,7 +45,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
-import de.tudarmstadt.tk.statistics.test.RBridge;
+import de.tudarmstadt.tk.statistics.test.Statistics;
 
 
 /**
@@ -71,7 +71,7 @@ public class StatsConfig {
 	
 	public static StatsConfig getInstance(String filePath) {
 		if (instance == null) {
-			synchronized (RBridge.class) {
+			synchronized (Statistics.class) {
 				if (instance == null) {
 					instance = new StatsConfig(filePath);
 				}
@@ -82,7 +82,7 @@ public class StatsConfig {
 	
 	public static StatsConfig getInstance(HashMap<StatsConfigConstants.TEST_CLASSES,String> requiredTests, List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections, HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES,Double> significanceLevels, int selectBestN, String selectByMeasure, StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable) {
 		if (instance == null) {
-			synchronized (RBridge.class) {
+			synchronized (Statistics.class) {
 				if (instance == null) {
 					
 					//Validate arguments

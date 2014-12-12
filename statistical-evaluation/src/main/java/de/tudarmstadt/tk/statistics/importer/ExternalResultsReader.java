@@ -58,7 +58,7 @@ import de.tudarmstadt.tk.statistics.helper.Helpers;
 import de.tudarmstadt.tk.statistics.report.EvaluationResults;
 import de.tudarmstadt.tk.statistics.report.EvaluationResultsWriter;
 import de.tudarmstadt.tk.statistics.test.SampleData;
-import de.tudarmstadt.tk.statistics.test.Statistics;
+import de.tudarmstadt.tk.statistics.test.StatsProcessor;
 
 
 /**
@@ -919,7 +919,7 @@ public class ExternalResultsReader{
 		SampleData sampleData = interpretCSV(config, rows, pipelineType, pipelineMetadata);
 		List<SampleData> splittedSamples = splitData(sampleData, config);
 
-		Statistics stats = new Statistics(config);
+		StatsProcessor stats = new StatsProcessor(config);
 		//String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
 
 		for(int i=0; i<splittedSamples.size(); i++){
