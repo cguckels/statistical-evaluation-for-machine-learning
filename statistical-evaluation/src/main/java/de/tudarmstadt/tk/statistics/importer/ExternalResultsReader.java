@@ -56,7 +56,6 @@ import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.helper.Helpers;
 import de.tudarmstadt.tk.statistics.report.EvaluationResults;
-import de.tudarmstadt.tk.statistics.report.EvaluationResultsWriter;
 import de.tudarmstadt.tk.statistics.test.SampleData;
 import de.tudarmstadt.tk.statistics.test.StatsProcessor;
 
@@ -865,88 +864,8 @@ public class ExternalResultsReader{
 			splitted.add(newData);
 		}
 		return splitted;
-	}
-
-	/**
-	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
-	 * Use this method if the data stems from an n-fold cross-validation. Each line should represent the model's performance for one fold of the CV.
-	 * @param pathToCsvFile The path to the external data file.
-	 * @param separator The character used to separate columns in the file.
-	 */
-	public static void evaluateCV(StatsConfig config, String pathToCsvFile, String outputPath, char separator) {
-		logger.log(Level.INFO, "Starting evaluation of data from a simple cross-validation.");
-
-		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.CV, pipelineMetadata);
-	}
-
-	/**
-	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
-	 * Use this method if the data stems from a repeated n-fold cross-validation. Each line should represent the model's performance for one CV averaged over all folds.
-	 * @param pathToCsvFile The path to the external data file.
-	 * @param separator The character used to separate columns in the file.
-	 */
-	public static void evaluateRepeatedCV(StatsConfig config, String pathToCsvFile, String outputPath, char separator, int nFolds) {
-		logger.log(Level.INFO, "Starting evaluation of data from a repeated cross-validation.");
-		
-		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		pipelineMetadata.put("nFolds", nFolds);
-		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.MULTIPLE_CV, pipelineMetadata);
-	}
-
-	/*
-	// Multi-Domain CV: Each line=average performance per CV
-	public static void evaluateMultiDomainCV(String pathToCsvFile, String separator, int nFolds, boolean againstBaseline) {
-		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		pipelineMetadata.put("nFolds", nFolds);
-		evaluate(pathToCsvFile, separator, ReportTypes.CV_DATASET_LVL, againstBaseline, pipelineMetadata);
-	}
-
-	// Multi-Domain Repeated CV: Each line=average performance over all
-	// repetitions
-	public static void evaluateMultiDomainRepeatedCV(String pathToCsvFile, String separator, int nFolds, int nRepetitions, boolean againstBaseline) {
-		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		pipelineMetadata.put("nFolds", nFolds);
-		pipelineMetadata.put("nRepetitions", nRepetitions);
-		evaluate(pathToCsvFile, separator, ReportTypes.MULTIPLE_CV_DATASET_LVL, againstBaseline, pipelineMetadata);
-	}*/
-
-	/**
-	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
-	 * Use this method if the data stems from a Train-Test-Evaluation. Each line should represent the model's performance for one test.
-	 * @param pathToCsvFile The path to the external data file.
-	 * @param separator The character used to separate columns in the file.
-	 */
-	public static void evaluateTrainTest(StatsConfig config, String pathToCsvFile, String outputPath, char separator) {
-		logger.log(Level.INFO, "Starting evaluation of data from a Train-Test scenario.");
-
-		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
-		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, pipelineMetadata);
-	}
-
-	public static void evaluate(StatsConfig config, String pathToCsvFile, String outputPath, char separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
-
-		List<String[]> rows = readAndCheckCSV(pathToCsvFile, separator);
-		SampleData sampleData = interpretCSV(config, rows, pipelineType, pipelineMetadata);
-		List<SampleData> splittedSamples = splitData(sampleData, config);
-
-		StatsProcessor stats = new StatsProcessor(config);
-		//String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
-
-		for(int i=0; i<splittedSamples.size(); i++){
-			
-			SampleData samples = splittedSamples.get(i);
+	}	
 	
-			EvaluationResults evalResults = stats.performStatisticalEvaluation(samples);
-						
-			if(evalResults==null){
-				continue;
-			}
-			createEvaluationReport(outputPath, evalResults);
-			
-		}	
-	}
-
 	/**
 	 * Read csv file, split each line by the specified separator and check
 	 * whether each line can be split into the same number of columns
@@ -954,7 +873,7 @@ public class ExternalResultsReader{
 	 * @param pathToCsvFile the path to the .csv file
 	 * @param separator the separator to be used to split a line in separate cells, each relating to one column ArrayList<String[]> containing all lines split into tokens
 	 */
-	private static List<String[]> readAndCheckCSV(String pathToCsvFile, char separator) {
+	public static List<String[]> readAndCheckCSV(String pathToCsvFile, char separator) {
 		List<String[]> rows = new ArrayList<String[]>();
 		try {
 		    CSVReader reader = new CSVReader(new FileReader(pathToCsvFile),separator);
@@ -982,50 +901,5 @@ public class ExternalResultsReader{
 		}
 		return rows;
 	}
-
-	/**
-	 * Creates a latex and plain report of the evaluation results and writes it
-	 * into the specified directory
-	 * 
-	 * @param pathToDirectory directory in which the reports should be written
-	 * @param evalResults results of the statistical evaluation to be described in the reports
-	 */
-	private static void createEvaluationReport(String pathToDirectory, EvaluationResults evalResults) {
-
-		try {
-			File directory = new File(pathToDirectory);
-			if (!directory.isDirectory()) {
-				directory.getParent();
-			}
-			directory = new File(directory, "Report"+UUID.randomUUID());
-			directory.mkdir();
-			
-			File latexFile = new File(directory, "statisticalReport.tex");
-			File plainFile = new File(directory, "statisticalReport.txt");
-			
-			EvaluationResultsWriter resultsWriter = new EvaluationResultsWriter(evalResults);
-			String latexReport = resultsWriter.createLatexReport(latexFile.getParentFile());
-			String plainReport = resultsWriter.createPlainReport();
-
-			Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(latexFile)));
-			out.write(latexReport);
-			out.close();
-			logger.log(Level.INFO, String.format("Wrote plain report of statistical evaluation to %s.",plainFile.toPath()));
-
-			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(plainFile)));
-			out.write(plainReport);
-			out.close();
-			logger.log(Level.INFO, String.format("Wrote Latex report of statistical evaluation to %s.",latexFile.toPath()));
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-	
-
-
-	
-	
 
 }

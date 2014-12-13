@@ -69,6 +69,11 @@ public class StatsConfig {
 	private String selectByMeasure;
 	private StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable;
 	
+	/**
+	 * Singleton constructor reading the configuration data from an external xml file
+	 * @param filePath the path of the configuration xml file
+	 * @return an object of type {@link StatsConfig}
+	 */
 	public static StatsConfig getInstance(String filePath) {
 		if (instance == null) {
 			synchronized (Statistics.class) {
@@ -80,6 +85,10 @@ public class StatsConfig {
 		return instance;
 	}
 	
+	/**
+	 * Singleton constructor requiring the user to supply all configuration parameters as argument.
+	 * @return an object of type {@link StatsConfig}
+	 */
 	public static StatsConfig getInstance(HashMap<StatsConfigConstants.TEST_CLASSES,String> requiredTests, List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections, HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES,Double> significanceLevels, int selectBestN, String selectByMeasure, StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable) {
 		if (instance == null) {
 			synchronized (Statistics.class) {
@@ -129,6 +138,49 @@ public class StatsConfig {
 
 		this.parseXML(pathToConfigFile);
 		
+	}
+	
+	/**
+	 * Singleton constructor setting default values to the config file
+	 * @return an object of type {@link StatsConfig}
+	 */
+	public static StatsConfig getInstance(){
+		
+		if (instance == null) {
+			synchronized (Statistics.class) {
+				if (instance == null) {
+					HashMap<StatsConfigConstants.TEST_CLASSES,String> requiredTests = new HashMap<StatsConfigConstants.TEST_CLASSES,String>();
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.TwoSamplesNonParametricContingency, "McNemar");
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.TwoSamplesParametric, "DependentT");
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.TwoSamplesNonParametric, "WilcoxonSignedRank");
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametric, "RepeatedMeasuresOneWayANOVA");
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametric, "Friedman");
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametricPosthoc, "Tukey");
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametricPostHoc, "Nemenyi");
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametricPosthocBaseline, "Dunett");
+					requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametricPostHocBaseline, "PairwiseWilcoxonSignedRank");
+					
+					List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections = new ArrayList<StatsConfigConstants.CORRECTION_VALUES>();
+					requiredCorrections.add(StatsConfigConstants.CORRECTION_VALUES.bonferroni);
+					requiredCorrections.add(StatsConfigConstants.CORRECTION_VALUES.hochberg);
+					requiredCorrections.add(StatsConfigConstants.CORRECTION_VALUES.holm);
+					
+					HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES, Double> significanceLevels = new HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES, Double>();
+					significanceLevels.put(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.low, 0.1);
+					significanceLevels.put(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.medium, 0.05);
+					significanceLevels.put(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.high, 0.01);
+			
+					StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable = StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier;
+			
+					int selectBestN = 10;
+					String selectByMeasure = "Weighted F-Measure";
+					
+					instance = new StatsConfig(requiredTests, requiredCorrections, significanceLevels, selectBestN, selectByMeasure, fixIndependentVariable); 
+					
+				}
+			}
+		}
+		return instance;
 	}
 	
 	private StatsConfig(HashMap<StatsConfigConstants.TEST_CLASSES,String> requiredTests, List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections, HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES,Double> significanceLevels, int selectBestN, String selectByMeasure, StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable){
@@ -325,6 +377,34 @@ public class StatsConfig {
 
 	public StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES getFixIndependentVariable() {
 		return fixIndependentVariable;
+	}
+
+	public void setRequiredTests(
+			HashMap<StatsConfigConstants.TEST_CLASSES, String> requiredTests) {
+		this.requiredTests = requiredTests;
+	}
+
+	public void setRequiredCorrections(
+			List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections) {
+		this.requiredCorrections = requiredCorrections;
+	}
+
+	public void setSignificanceLevels(
+			HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES, Double> significanceLevels) {
+		this.significanceLevels = significanceLevels;
+	}
+
+	public void setSelectBestN(int selectBestN) {
+		this.selectBestN = selectBestN;
+	}
+
+	public void setSelectByMeasure(String selectByMeasure) {
+		this.selectByMeasure = selectByMeasure;
+	}
+
+	public void setFixIndependentVariable(
+			StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable) {
+		this.fixIndependentVariable = fixIndependentVariable;
 	}
 
 }

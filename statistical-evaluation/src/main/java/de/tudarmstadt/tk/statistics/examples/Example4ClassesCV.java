@@ -27,6 +27,7 @@ import org.junit.Test;
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.importer.ExternalResultsReader;
+import de.tudarmstadt.tk.statistics.test.StatsProcessor;
 
 public class Example4ClassesCV {
 	
@@ -69,7 +70,73 @@ public class Example4ClassesCV {
 		
 		String csvPath = "src/main/resources/examples/4ClassesCVExample.csv";
 		String outputPath = "src/main/resources/examples/";
-		ExternalResultsReader.evaluateCV(config, csvPath, outputPath, ';');		
+		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');		
+		
+	}
+	
+	/*
+	 * The file contains performance samples for three feature sets and a fixed classification algorithm. One model is defined as a baseline to compare the others against.
+	 */
+	//Works
+	@Test
+	public void testCVFeaturesBaseline(){
+		
+		StatsConfig config = StatsConfig.getInstance();
+
+		String csvPath = "src/main/resources/examples/CVFeaturesBaseline.csv";
+		String outputPath = "src/main/resources/examples/";
+		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');	
+		
+	}
+	
+
+	/*
+	 * The file contains performance samples for four different classifiers and a fixed feature set. One model is defined as a baseline to compare the others against.
+	 */
+	//Works
+	@Test
+	public void testCVClassifierBaseline(){
+		
+		StatsConfig config = StatsConfig.getInstance();
+		config.setFixIndependentVariable(StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier);
+
+		String csvPath = "src/main/resources/examples/CVClassifierBaseline.csv";
+		String outputPath = "src/main/resources/examples/";
+		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');	
+		
+	}
+	
+	/*
+	 * The file contains performance samples for four classification algorithms and two feature sets, resulting in 8 different models.
+	 * The dataset is split according to the "fixIndependentVariable" setting in the configuration.
+	 */
+	//Works
+	@Test
+	public void testCVTwoIV(){
+		
+		StatsConfig config = StatsConfig.getInstance();
+		config.setFixIndependentVariable(StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.FeatureSet);
+
+		String csvPath = "src/main/resources/examples/CV2IV.csv";
+		String outputPath = "src/main/resources/examples/";
+		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');	
+		
+	}
+	
+	
+	/*
+	 * The file contains performance samples for two different classification algorithms and three different feature sets, resulting in 6 different models.
+	 * The dataset is split differently depending on the "fixIndependentVariable" setting in the configuration.
+	 */
+	@Test
+	public void testTrainTestTwoIV(){
+		
+		StatsConfig config = StatsConfig.getInstance();
+		config.setFixIndependentVariable(StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier);
+
+		String csvPath = "src/main/resources/examples/TrainTest2IV.csv";
+		String outputPath = "src/main/resources/examples/";
+		StatsProcessor.evaluateTrainTest(config, csvPath, outputPath, ';');	
 		
 	}
 

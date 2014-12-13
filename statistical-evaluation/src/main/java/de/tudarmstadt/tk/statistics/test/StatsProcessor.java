@@ -20,12 +20,21 @@ package de.tudarmstadt.tk.statistics.test;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
@@ -36,10 +45,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.graph.DefaultEdge;
 
+import au.com.bytecode.opencsv.CSVReader;
+import de.tudarmstadt.tk.statistics.config.ReportTypes;
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.helper.ImprovedDirectedGraph;
+import de.tudarmstadt.tk.statistics.importer.ExternalResultsReader;
 import de.tudarmstadt.tk.statistics.report.EvaluationResults;
+import de.tudarmstadt.tk.statistics.report.ReportGenerator;
 
 /**
  * Class to perform statistical evaluation of machine-learning sample data
@@ -51,6 +64,88 @@ public class StatsProcessor {
     
 	public StatsProcessor(StatsConfig config) {
 		this.config=config;
+	}
+	
+
+	/**
+	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
+	 * Use this method if the data stems from an n-fold cross-validation. Each line should represent the model's performance for one fold of the CV.
+	 * @param pathToCsvFile The path to the external data file.
+	 * @param separator The character used to separate columns in the file.
+	 */
+	public static void evaluateCV(StatsConfig config, String pathToCsvFile, String outputPath, char separator) {
+		logger.log(Level.INFO, "Starting evaluation of data from a simple cross-validation.");
+
+		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.CV, pipelineMetadata);
+	}
+
+	/**
+	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
+	 * Use this method if the data stems from a repeated n-fold cross-validation. Each line should represent the model's performance for one CV averaged over all folds.
+	 * @param pathToCsvFile The path to the external data file.
+	 * @param separator The character used to separate columns in the file.
+	 */
+	public static void evaluateRepeatedCV(StatsConfig config, String pathToCsvFile, String outputPath, char separator, int nFolds) {
+		logger.log(Level.INFO, "Starting evaluation of data from a repeated cross-validation.");
+		
+		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
+		pipelineMetadata.put("nFolds", nFolds);
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.MULTIPLE_CV, pipelineMetadata);
+	}
+
+	/*
+	// Multi-Domain CV: Each line=average performance per CV
+	public static void evaluateMultiDomainCV(String pathToCsvFile, String separator, int nFolds, boolean againstBaseline) {
+		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
+		pipelineMetadata.put("nFolds", nFolds);
+		evaluate(pathToCsvFile, separator, ReportTypes.CV_DATASET_LVL, againstBaseline, pipelineMetadata);
+	}
+
+	// Multi-Domain Repeated CV: Each line=average performance over all
+	// repetitions
+	public static void evaluateMultiDomainRepeatedCV(String pathToCsvFile, String separator, int nFolds, int nRepetitions, boolean againstBaseline) {
+		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
+		pipelineMetadata.put("nFolds", nFolds);
+		pipelineMetadata.put("nRepetitions", nRepetitions);
+		evaluate(pathToCsvFile, separator, ReportTypes.MULTIPLE_CV_DATASET_LVL, againstBaseline, pipelineMetadata);
+	}*/
+
+	/**
+	 * Triggers a statistical evaluation of external data and stores the report in the same folder. 
+	 * Use this method if the data stems from a Train-Test-Evaluation. Each line should represent the model's performance for one test.
+	 * @param pathToCsvFile The path to the external data file.
+	 * @param separator The character used to separate columns in the file.
+	 */
+	public static void evaluateTrainTest(StatsConfig config, String pathToCsvFile, String outputPath, char separator) {
+		logger.log(Level.INFO, "Starting evaluation of data from a Train-Test scenario.");
+
+		HashMap<String, Integer> pipelineMetadata = new HashMap<String, Integer>();
+		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, pipelineMetadata);
+	}
+
+	public static void evaluate(StatsConfig config, String pathToCsvFile, String outputPath, char separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
+
+		List<String[]> rows = ExternalResultsReader.readAndCheckCSV(pathToCsvFile, separator);
+		SampleData sampleData = ExternalResultsReader.interpretCSV(config, rows, pipelineType, pipelineMetadata);
+		List<SampleData> splittedSamples = ExternalResultsReader.splitData(sampleData, config);
+
+		StatsProcessor stats = new StatsProcessor(config);
+		//String outputPath = new File(pathToCsvFile).getParentFile().getAbsolutePath();
+
+		for(int i=0; i<splittedSamples.size(); i++){
+			
+			SampleData samples = splittedSamples.get(i);
+	
+			EvaluationResults evalResults = stats.performStatisticalEvaluation(samples);
+						
+			if(evalResults==null){
+				continue;
+			}
+			
+			ReportGenerator.createEvaluationReport(outputPath, pathToCsvFile, evalResults);
+			
+		}	
 	}
 
 	/**

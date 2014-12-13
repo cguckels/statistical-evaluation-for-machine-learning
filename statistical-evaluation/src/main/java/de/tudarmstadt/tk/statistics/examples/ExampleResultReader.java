@@ -27,6 +27,7 @@ import org.junit.Test;
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
 import de.tudarmstadt.tk.statistics.importer.ExternalResultsReader;
+import de.tudarmstadt.tk.statistics.test.StatsProcessor;
 
 public class ExampleResultReader {
 	
@@ -69,7 +70,7 @@ public class ExampleResultReader {
 		
 		String csvPath = "src/main/resources/examples/statistics_eval.csv";
 		String outputPath = "src/main/resources/examples/";
-		ExternalResultsReader.evaluateCV(config, csvPath, outputPath, ';');		
+		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');		
 		
 	}
 

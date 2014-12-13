@@ -1186,9 +1186,7 @@ public class Statistics {
 			engine.eval("df$variable <- factor(df$variable)");
 
 			engine.eval(String.format("png(file='%s.png', height=600, width=1000, units='px')", filename));
-			engine.eval(String
-					.format("print(ggplot(df, aes(factor(variable), value)) + geom_boxplot() + stat_summary(fun.y=mean, colour='darkred', geom='point', shape=18, size=3,show_guide = FALSE) + theme(axis.title.x=element_blank())+scale_y_continuous(name='%s',limits=c(0,1)))",
-							measure));
+			engine.eval(String.format("print(ggplot(df, aes(factor(variable), value)) + geom_boxplot() + stat_summary(fun.y=mean, colour='darkred', geom='point', shape=18, size=3,show_guide = FALSE) + theme(axis.title.x=element_blank())+scale_y_continuous(name='%s',limits=c(0,1)))",measure));
 			engine.eval("dev.off()");
 
 			/*
