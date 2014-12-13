@@ -486,14 +486,9 @@ public class EvaluationResultsWriter {
 		String[][] values = new String[nModels][3];
 		for (int r = 0; r < nModels; r++) {
 			values[r][0] = String.format("M%d", r);
-			// Remove package prefix for algorithms, e.g. shorten "trees.J48" to
-			// "J48".
+			// Remove package prefix for algorithms, e.g. shorten "trees.J48" to "J48".
 			String[] algorithm = evalResults.getSampleData().getModelMetadata().get(r).getKey().split("\\.");
-			if (algorithm.length > 1) {
-				values[r][1] = escapeLatexCharacters(algorithm[1]);
-			} else {
-				values[r][1] = escapeLatexCharacters(algorithm[0]);
-			}
+			values[r][1] = escapeLatexCharacters(algorithm[algorithm.length-1]);
 			values[r][2] = escapeLatexCharacters(evalResults.getSampleData().getModelMetadata().get(r).getValue());
 		}
 
@@ -587,6 +582,7 @@ public class EvaluationResultsWriter {
 						// average measure over all samples
 					} else {
 						values[r][0] = String.format("M%d", (r - 1));
+						//values[r][nSamples + 1] = String.format("%.2f", averageMeasureSamples.get(r - 1) * 100);
 						values[r][nSamples + 1] = String.format("%.2f", averageMeasureSamples.get(r - 1) * 100);
 						ArrayList<Double> s = measureSamples.get(r - 1);
 						for (int j = 0; j < s.size(); j++) {
@@ -595,10 +591,10 @@ public class EvaluationResultsWriter {
 					}
 				}
 				if (values.length > 58) {
-					table = createLatexLongTable(caption, ref, new String[] { "Classifier", String.format("\\multicolumn{%d}{|c|}{%s %s [\\%%]}", nSamples, measure, sampleOrigin), "Average" },
+					table = createLatexLongTable(caption, ref, new String[] { "Classifier", String.format("\\multicolumn{%d}{|c|}{%s %s}", nSamples, measure, sampleOrigin), "Average" },
 							String.format("|%s", StringUtils.repeat("l|", nSamples + 2)), values);
 				} else {
-					table = createLatexTable(caption, ref, new String[] { "Classifier", String.format("\\multicolumn{%d}{|c|}{%s %s [\\%%]}", nSamples, measure, sampleOrigin), "Average" },
+					table = createLatexTable(caption, ref, new String[] { "Classifier", String.format("\\multicolumn{%d}{|c|}{%s %s}", nSamples, measure, sampleOrigin), "Average" },
 							String.format("|%s", StringUtils.repeat("l|", nSamples + 2)), values);
 				}
 				break;
@@ -619,7 +615,8 @@ public class EvaluationResultsWriter {
 					} else if (r == nSamples + 1) {
 						values[r][0] = "Average";
 						for (int j = 0; j < nModels; j++) {
-							values[r][j + 1] = String.format("%.2f", averageMeasureSamples.get(j) * 100);
+							//values[r][j + 1] = String.format("%.2f", averageMeasureSamples.get(j) * 100);
+							values[r][j + 1] = String.format("%.2f", averageMeasureSamples.get(j));
 						}
 						// Next lines with model indices, samples per fold and
 						// average measure over all samples
@@ -638,14 +635,15 @@ public class EvaluationResultsWriter {
 						}
 						for (int j = 0; j < nModels; j++) {
 							ArrayList<Double> s = measureSamples.get(j);
-							values[r][j + 1] = String.format("%.2f", s.get(r - 1) * 100);
+							//values[r][j + 1] = String.format("%.2f", s.get(r - 1) * 100);
+							values[r][j + 1] = String.format("%.2f", s.get(r - 1));
 						}
 					}
 				}
 				if (values.length > 58) {
-					table = createLatexLongTable(caption, ref, new String[] { "Dataset", String.format("\\multicolumn{%d}{|c|}{%s %s [\\%%]}", nModels, measure, sampleOrigin) }, String.format("|%s", StringUtils.repeat("l|", nModels + 1)), values);
+					table = createLatexLongTable(caption, ref, new String[] { "Dataset", String.format("\\multicolumn{%d}{|c|}{%s %s}", nModels, measure, sampleOrigin) }, String.format("|%s", StringUtils.repeat("l|", nModels + 1)), values);
 				} else {
-					table = createLatexTable(caption, ref, new String[] { "Dataset", String.format("\\multicolumn{%d}{|c|}{%s %s [\\%%]}", nModels, measure, sampleOrigin) }, String.format("|%s", StringUtils.repeat("l|", nModels + 1)), values);
+					table = createLatexTable(caption, ref, new String[] { "Dataset", String.format("\\multicolumn{%d}{|c|}{%s %s}", nModels, measure, sampleOrigin) }, String.format("|%s", StringUtils.repeat("l|", nModels + 1)), values);
 				}
 				break;
 			}
@@ -1153,7 +1151,8 @@ public class EvaluationResultsWriter {
 
 		ArrayList<Pair<String, String>> modelMetadata = evalResults.getSampleData().getModelMetadata();
 		for (int modelIndex = 0; modelIndex < modelMetadata.size(); modelIndex++) {
-			String modelAlgorithm = modelMetadata.get(modelIndex).getKey();
+			String[] algorithm = modelMetadata.get(modelIndex).getKey().split("\\.");
+			String modelAlgorithm = algorithm[algorithm.length-1];
 			String modelFeatureSet = modelMetadata.get(modelIndex).getValue();
 			report.append(String.format("M%d: %s; %s\n", modelIndex, modelAlgorithm, modelFeatureSet));
 		}

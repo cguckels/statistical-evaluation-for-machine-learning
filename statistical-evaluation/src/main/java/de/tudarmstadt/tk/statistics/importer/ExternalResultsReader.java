@@ -582,7 +582,10 @@ public class ExternalResultsReader{
 
 		HashMap<Integer, ArrayList<ArrayList<Double>>> samplesPerMeasure = new HashMap<Integer, ArrayList<ArrayList<Double>>>();
 
-		rows.remove(0); // Remove header
+		//Only remove first line if it is a header line
+		if(rows.size()>0 && rows.get(0)[6].equals("IsBaseline")){
+			rows.remove(0);
+		}
 
 		if (rows.size() > 1) {
 
@@ -613,6 +616,13 @@ public class ExternalResultsReader{
 				if (!measures.contains(columns[4])) {
 					measures.add(columns[4]);
 				}
+			}
+			
+			//Check: Baseline only allowed when > 2 models are evaluated
+			if(models.size()<=2 && baselineModels.size()>0){
+				logger.log(Level.WARN, "At least three models are required to make an evaluation against a baseline meaningful. In the dataset, a baseline was specified for only two models. The baseline indicator will be ignored.");
+				System.err.println("At least three models are required to make an evaluation against a baseline meaningful. In the dataset, a baseline was specified for only two models. The baseline indicator will be ignored.");
+				baselineModels.clear();
 			}
 
 			// Now sort samples according to data
@@ -688,7 +698,8 @@ public class ExternalResultsReader{
 			// Check if data fulfills general requirements: > 5 samples for each model, same number of samples per model
 			it = samplesPerMeasure.keySet().iterator();
 			while(it.hasNext()){
-				ArrayList<ArrayList<Double>> samplesPerModel = samplesPerMeasure.get(it.next());
+				Integer measureIndex = it.next();
+				ArrayList<ArrayList<Double>> samplesPerModel = samplesPerMeasure.get(measureIndex);
 				int s = samplesPerModel.get(0).size();
 				
 				for(int i=1; i<samplesPerModel.size(); i++){

@@ -69,7 +69,7 @@ public class Example4ClassesCV {
 		
 		String csvPath = "src/main/resources/examples/4ClassesCVExample.csv";
 		String outputPath = "src/main/resources/examples/";
-		ExternalResultsReader.evaluateTrainTest(config, csvPath, outputPath, ';');		
+		ExternalResultsReader.evaluateCV(config, csvPath, outputPath, ';');		
 		
 	}
 

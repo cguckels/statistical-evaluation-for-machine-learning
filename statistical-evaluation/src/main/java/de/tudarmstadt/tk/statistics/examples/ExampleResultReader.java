@@ -67,7 +67,7 @@ public class ExampleResultReader {
 		
 		StatsConfig config = StatsConfig.getInstance(requiredTests, requiredCorrections, significanceLevels, selectBestN, selectByMeasure, fixIndependentVariable);
 		
-		String csvPath = "src/main/resources/examples/PerformancesDemoFile2IVClassifiersBaseline.csv";
+		String csvPath = "src/main/resources/examples/statistics_eval.csv";
 		String outputPath = "src/main/resources/examples/";
 		ExternalResultsReader.evaluateCV(config, csvPath, outputPath, ';');		
 		
