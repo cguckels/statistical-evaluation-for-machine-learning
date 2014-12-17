@@ -68,7 +68,7 @@ public class RStatsTester {
 		Statistics stats = Statistics.getInstance(true);
 		stats.plotGraph(new int[][] { { 1, 2, 3, 4, 5, 6 }, { 2, 3, 4, 5, 6, 1 } }, 8, "graph");
 		stats.plotQQNorm(new double[] { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 }, "M3", "F-Measure", "qqPlot");
-		stats.plotBoxWhisker(new double[][] { { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 }, { 0.3, 0.4, 0.5, 0.7, 0.6, 0.3, 0.4 }, { 0.2, 0.3, 0.5, 0.7 } }, "boxWhiskerPlot", "F-Measure");
+		stats.plotBoxWhisker(new double[][] { { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 }, { 0.3, 0.4, 0.5, 0.7, 0.6, 0.3, 0.4 }, { 0.2, 0.3, 0.5, 0.7 } }, 0, 1, "boxWhiskerPlot", "F-Measure");
 	}
 
 	@Test

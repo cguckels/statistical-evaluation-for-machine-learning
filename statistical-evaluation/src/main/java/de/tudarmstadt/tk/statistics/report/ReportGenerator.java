@@ -576,22 +576,33 @@ public class ReportGenerator {
 			ref = String.format("tbl:%s", measure.replaceAll("\\s", ""));
 			report.append(String.format("The %s samples drawn from the %s and the %d models are presented in Tbl. \\ref{%s}.\n", measure, pipelineDescription, nModels, ref));
 
-			// Plot Box-Whisker-Diagram of samples for the current measure and
-			// add the figure to the appendix
+			// Plot Box-Whisker-Diagram of samples for the current measure and add the figure to the appendix
+			// Use the min/max sample value as indicators for the box-plots limits
 			String filename = String.format("boxPlot%s", measure.replaceAll("\\s", ""));
 			String path = String.format("%s%s%s", outputFolderPath, File.separator, filename);
 			String pathR = this.fixSlashes(path);
 			String figRef = String.format("fig:boxPlot%s", measure.replaceAll("\\s", ""));
 			String caption = String.format("Box-Whisker-Plot of %s samples. Red dots indicate means.", measure);
 			double[][] samples = new double[nModels][];
+			double minSample = Double.MAX_VALUE;
+			double maxSample = Double.MIN_VALUE;
 			for (int k = 0; k < nModels; k++) {
 				ArrayList<Double> s = measureSamples.get(k);
 				samples[k] = new double[s.size()];
 				for (int j = 0; j < s.size(); j++) {
 					samples[k][j] = s.get(j);
+					if(minSample>s.get(j)){
+						minSample = s.get(j);
+					}
+					if(maxSample<s.get(j)){
+						maxSample = s.get(j);
+					}
 				}
 			}
-			boolean successful = stats.plotBoxWhisker(samples, pathR, measure);
+			double sampleRange = maxSample - minSample;
+			int lowerLimit = (int)Math.floor(minSample - sampleRange * 0.1);
+			int upperLimit = (int)Math.ceil(maxSample + sampleRange * 0.1);
+			boolean successful = stats.plotBoxWhisker(samples, lowerLimit, upperLimit, pathR, measure);
 			if (successful) {
 				figures.add(new String[] { figRef, caption, filename });
 				report.append(String.format("See Fig. \\ref{%s} for a Box-Whisker plot of these samples. ", figRef));
@@ -615,10 +626,11 @@ public class ReportGenerator {
 					} else {
 						values[r][0] = String.format("M%d", (r - 1));
 						//values[r][nSamples + 1] = String.format("%.2f", averageMeasureSamples.get(r - 1) * 100);
-						values[r][nSamples + 1] = String.format("%.2f", averageMeasureSamples.get(r - 1) * 100);
+						values[r][nSamples + 1] = String.format("%.2f", averageMeasureSamples.get(r - 1));
 						ArrayList<Double> s = measureSamples.get(r - 1);
 						for (int j = 0; j < s.size(); j++) {
-							values[r][j + 1] = String.format("%.2f", s.get(j) * 100);
+							//values[r][j + 1] = String.format("%.2f", s.get(j) * 100);
+							values[r][j + 1] = String.format("%.2f", s.get(j));
 						}
 					}
 				}

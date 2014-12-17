@@ -1143,13 +1143,15 @@ public class Statistics {
 	 *            Individual performance results of different items (e.g. models
 	 *            -> rows) over different domains or folds (columns). Please
 	 *            ensure that data is measured on at least two domains/folds!
+	 * @param min Minimum value on the y axis
+	 * @param max Maximum value on the y axis
 	 * @param filename
 	 *            The path where the plot should be stored
 	 * @param measure
 	 *            The name of the performance measure the samples represent
 	 * @return True if plotting and saving to file succeeded, false otherwise.
 	 **/
-	public boolean plotBoxWhisker(double[][] s, String filename, String measure) {
+	public boolean plotBoxWhisker(double[][] s, int min, int max, String filename, String measure) {
 
 		if (s.length == 0) {
 			System.err.println("Empty input matrix. Please check! Returning empty string.");
@@ -1186,7 +1188,7 @@ public class Statistics {
 			engine.eval("df$variable <- factor(df$variable)");
 
 			engine.eval(String.format("png(file='%s.png', height=600, width=1000, units='px')", filename));
-			engine.eval(String.format("print(ggplot(df, aes(factor(variable), value)) + geom_boxplot() + stat_summary(fun.y=mean, colour='darkred', geom='point', shape=18, size=3,show_guide = FALSE) + theme(axis.title.x=element_blank())+scale_y_continuous(name='%s',limits=c(0,1)))",measure));
+			engine.eval(String.format("print(ggplot(df, aes(factor(variable), value)) + geom_boxplot() + stat_summary(fun.y=mean, colour='darkred', geom='point', shape=18, size=3,show_guide = FALSE) + theme(axis.title.x=element_blank())+scale_y_continuous(name='%s',limits=c(%d,%d)))",measure,min,max));
 			engine.eval("dev.off()");
 
 			/*

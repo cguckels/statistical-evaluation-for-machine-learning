@@ -1,4 +1,4 @@
-package de.tudarmstadt.tk.statistics.examples;
+package de.tudarmstadt.tk.statistics.unittest;
 
 /**
  * Copyright 2014
@@ -18,61 +18,15 @@ package de.tudarmstadt.tk.statistics.examples;
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import org.junit.Test;
 
 import de.tudarmstadt.tk.statistics.config.StatsConfig;
 import de.tudarmstadt.tk.statistics.config.StatsConfigConstants;
-import de.tudarmstadt.tk.statistics.importer.ExternalResultsReader;
 import de.tudarmstadt.tk.statistics.test.StatsProcessor;
 
-public class Example4ClassesCV {
+public class ExampleInputTester {
 	
-	@Test
-	public void testCVInput(){
-
-		//Configuration via file
-		/*
-		StatsConfig config = StatsConfig.getInstance("config.xml");
-		*/
-		
-		//Configuration programmatically
-		HashMap<StatsConfigConstants.TEST_CLASSES,String> requiredTests = new HashMap<StatsConfigConstants.TEST_CLASSES,String>();
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.TwoSamplesNonParametricContingency, "McNemar");
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.TwoSamplesParametric, "DependentT");
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.TwoSamplesNonParametric, "WilcoxonSignedRank");
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametric, "RepeatedMeasuresOneWayANOVA");
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametric, "Friedman");
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametricPosthoc, "Tukey");
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametricPostHoc, "Nemenyi");
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesParametricPosthocBaseline, "Dunett");
-		requiredTests.put(StatsConfigConstants.TEST_CLASSES.MultipleSamplesNonParametricPostHocBaseline, "PairwiseWilcoxonSignedRank");
-		
-		List<StatsConfigConstants.CORRECTION_VALUES> requiredCorrections = new ArrayList<StatsConfigConstants.CORRECTION_VALUES>();
-		requiredCorrections.add(StatsConfigConstants.CORRECTION_VALUES.bonferroni);
-		requiredCorrections.add(StatsConfigConstants.CORRECTION_VALUES.hochberg);
-		requiredCorrections.add(StatsConfigConstants.CORRECTION_VALUES.holm);
-		
-		HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES, Double> significanceLevels = new HashMap<StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES, Double>();
-		significanceLevels.put(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.low, 0.1);
-		significanceLevels.put(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.medium, 0.05);
-		significanceLevels.put(StatsConfigConstants.SIGNIFICANCE_LEVEL_VALUES.high, 0.01);
-
-		StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES fixIndependentVariable = StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.FeatureSet;
-
-		int selectBestN = 10;
-		String selectByMeasure = "Weighted F-Measure";
-		
-		StatsConfig config = StatsConfig.getInstance(requiredTests, requiredCorrections, significanceLevels, selectBestN, selectByMeasure, fixIndependentVariable);
-		
-		String csvPath = "src/main/resources/examples/4ClassesCVExample.csv";
-		String outputPath = "src/main/resources/examples/";
-		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');		
-		
-	}
 	
 	/*
 	 * The file contains performance samples for three feature sets and a fixed classification algorithm. One model is defined as a baseline to compare the others against.
