@@ -5,46 +5,26 @@ package de.tudarmstadt.tk.statistics.config;
  * Telecooperation (TK) Lab
  * Technische Universit�t Darmstadt
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import java.io.Serializable;
-/**
- * Copyright 2014
- * Telecooperation (TK) Lab
- * Technische Universit�t Darmstadt
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 
 
 /**
-<<<<<<< HEAD:statistical-evaluation/src.main.java/de/tudarmstadt/tk/statistics/config/ReportTypes.java
  * An enum of possible data collection methods
  * @author Guckelsberger, Schulz
-=======
+
  * This enum lists all possible {@link ReportTypes} that can be obtained via
  * {@link AbstractPipelineReport}.<br>
  * Detailed information is available per type below. For clarification the
@@ -82,7 +62,6 @@ import java.io.Serializable;
  * lvl will not grant you access to the inner level reports and vice versa.<br>
  * Where to add you report highly depends on what kind of information you need!
  * 
->>>>>>> 79f8397ddd2a76df77cead9f4725e1ff5b2ee2dd:statistical-evaluation/src.main.java/de/tudarmstadt/tk/statistics/ReportTypes.java
  */
 public enum ReportTypes implements Serializable {
 
