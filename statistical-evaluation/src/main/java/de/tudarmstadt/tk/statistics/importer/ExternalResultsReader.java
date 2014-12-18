@@ -630,9 +630,14 @@ public class ExternalResultsReader{
 				String[] columns = rows.get(i);
 				Pair<String, String> data = null;
 				String trainData = columns[0].trim();
-				trainData=trainData.split("\\.")[0];
 				String testData = columns[1].trim();
-				testData=testData.split("\\.")[0];
+				
+				//If this is a CV, numbers after a dot indicate fold UUIDS, they thus have to be splitted to retain the original dataset name
+				if(pipelineType==ReportTypes.CV){
+					trainData=trainData.split("\\.")[0];
+					testData=testData.split("\\.")[0];
+				}
+				
 				if (trainData.equals(testData)) {
 					data = Pair.of(trainData, null);
 				} else {
