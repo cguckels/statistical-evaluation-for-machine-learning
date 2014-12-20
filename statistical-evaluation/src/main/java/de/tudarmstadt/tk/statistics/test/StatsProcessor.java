@@ -113,7 +113,7 @@ public class StatsProcessor {
 		evaluate(config, pathToCsvFile, outputPath, separator, ReportTypes.TRAIN_TEST_DATASET_LVL, pipelineMetadata);
 	}
 
-	public static void evaluate(StatsConfig config, String pathToCsvFile, String outputPath, char separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
+	private static void evaluate(StatsConfig config, String pathToCsvFile, String outputPath, char separator, ReportTypes pipelineType, HashMap<String, Integer> pipelineMetadata) {
 
 		List<String[]> rows = ExternalResultsReader.readAndCheckCSV(pathToCsvFile, separator);
 		SampleData sampleData = ExternalResultsReader.interpretCSV(config, rows, pipelineType, pipelineMetadata);

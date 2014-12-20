@@ -878,8 +878,13 @@ public class ExternalResultsReader{
 			if(rows.size()>0){
 				for(String[] row: rows){
 					if(row.length!=rows.get(0).length){
-						logger.log(Level.ERROR, ".csv file corrup: number of columns not same for each row.");
-						System.err.println(".csv file corrup: number of columns not same for each row.");
+						logger.log(Level.ERROR, ".csv file corrupt: number of columns not same for each row.");
+						System.err.println(".csv file corrupt: number of columns not same for each row.");
+						System.exit(1);
+					}
+					if(row.length!=7){
+						logger.log(Level.ERROR, ".csv file corrupt: must contain exactly 7 columns.");
+						System.err.println(".csv file corrupt: must contain exactly 7 columns.");
 						System.exit(1);
 					}
 				}

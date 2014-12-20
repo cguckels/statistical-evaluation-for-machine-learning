@@ -1,0 +1,120 @@
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.8043478261;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.8043478261;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.8043478261;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.652173913;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.652173913;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.652173913;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6304347826;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6304347826;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6304347826;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7391304348;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7391304348;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7391304348;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7173913043;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7173913043;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7173913043;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6739130435;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6739130435;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6739130435;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7391304348;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7391304348;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7391304348;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6739130435;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6739130435;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6739130435;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.652173913;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.652173913;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.652173913;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7173913043;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7173913043;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.functions.SMO;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7173913043;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7391304348;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7391304348;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7391304348;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6739130435;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6739130435;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6739130435;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.4565217391;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.4565217391;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.4565217391;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.652173913;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.652173913;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.652173913;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6739130435;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6739130435;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6739130435;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.5652173913;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.5652173913;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.5652173913;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6739130435;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6739130435;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6739130435;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.5869565217;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.5869565217;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.5869565217;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.5217391304;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.5217391304;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.5217391304;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.652173913;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.652173913;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.bayes.NaiveBayes;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.652173913;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7173913043;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7173913043;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7173913043;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.5869565217;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.5869565217;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.5869565217;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.5869565217;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.5869565217;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.5869565217;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7173913043;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7173913043;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7173913043;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6956521739;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6956521739;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6956521739;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6739130435;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6739130435;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6739130435;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7826086957;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7826086957;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7826086957;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6956521739;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6956521739;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6956521739;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.5434782609;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.5434782609;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.5434782609;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.652173913;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.652173913;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.trees.J48;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.652173913;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.8260869565;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.8260869565;0
+TwentyNewsgroupsCV.1412105646;TwentyNewsgroupsCV.1833159238;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.8260869565;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6956521739;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6956521739;0
+TwentyNewsgroupsCV.-1526543509;TwentyNewsgroupsCV.1642970697;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6956521739;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.652173913;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.652173913;0
+TwentyNewsgroupsCV.1048265;TwentyNewsgroupsCV.-1955438233;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.652173913;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6956521739;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6956521739;0
+TwentyNewsgroupsCV.1954312893;TwentyNewsgroupsCV.1514293619;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6956521739;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6956521739;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6956521739;0
+TwentyNewsgroupsCV.-2230912;TwentyNewsgroupsCV.2123944852;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6956521739;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7608695652;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7608695652;0
+TwentyNewsgroupsCV.-613062347;TwentyNewsgroupsCV.75488223;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7608695652;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7173913043;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7173913043;0
+TwentyNewsgroupsCV.-1998295295;TwentyNewsgroupsCV.760495123;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7173913043;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6739130435;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6739130435;0
+TwentyNewsgroupsCV.-1988174330;TwentyNewsgroupsCV.1897338382;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6739130435;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.6739130435;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.6739130435;0
+TwentyNewsgroupsCV.1584990745;TwentyNewsgroupsCV.2053768315;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.6739130435;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroPrecision;0.7608695652;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroFScore;0.7608695652;0
+TwentyNewsgroupsCV.1369024294;TwentyNewsgroupsCV.-2025232530;weka.classifiers.trees.RandomForest -I 200;NrOfTokensDFE, LuceneNGramDFE, ngramUseTopK:500, ngramMinN:1, ngramMaxN:3;MicroRecall;0.7608695652;0

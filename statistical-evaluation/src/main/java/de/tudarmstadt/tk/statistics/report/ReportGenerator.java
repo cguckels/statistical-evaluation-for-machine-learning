@@ -936,7 +936,7 @@ public class ReportGenerator {
 						path = String.format("%s%s%s", outputFolderPath, File.separator, filename);
 						pathR = this.fixSlashes(path);
 						figRef = String.format("fig:graphOrdering%s%s", measure.replaceAll("\\s", ""), testType);
-						caption = String.format("Directed graph of significant differences between the models and %s as determined by the %s post-hoc test.", measure, testType);
+						caption = String.format("Directed graph of significant differences for %s, as indicated by the %s post-hoc test.", measure, testType.toLowerCase());
 						// int nodes[] = new int[nModels];
 						// for(int j=0; j<nModels;j++){nodes[j]=j;};
 						successful = stats.plotGraph(orderingEdgeList, nModels, pathR);

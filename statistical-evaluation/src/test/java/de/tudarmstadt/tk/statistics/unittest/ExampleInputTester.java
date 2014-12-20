@@ -26,11 +26,23 @@ import de.tudarmstadt.tk.statistics.test.StatsProcessor;
 
 public class ExampleInputTester {
 	
+	/*
+	 * The file contains performance samples for three classification algorithms and a fixed feature set.
+	 */
+	@Test
+	public void testCV(){
+		
+		StatsConfig config = StatsConfig.getInstance();
+
+		String csvPath = "src/main/resources/examples/CV.csv";
+		String outputPath = "src/main/resources/examples/";
+		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');	
+		
+	}
 	
 	/*
 	 * The file contains performance samples for three feature sets and a fixed classification algorithm. One model is defined as a baseline to compare the others against.
 	 */
-	//Works
 	@Test
 	public void testCVFeaturesBaseline(){
 		
@@ -41,12 +53,10 @@ public class ExampleInputTester {
 		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');	
 		
 	}
-	
 
 	/*
 	 * The file contains performance samples for four different classifiers and a fixed feature set. One model is defined as a baseline to compare the others against.
 	 */
-	//Works
 	@Test
 	public void testCVClassifierBaseline(){
 		
@@ -63,7 +73,6 @@ public class ExampleInputTester {
 	 * The file contains performance samples for four classification algorithms and two feature sets, resulting in 8 different models.
 	 * The dataset is split according to the "fixIndependentVariable" setting in the configuration.
 	 */
-	//Works
 	@Test
 	public void testCVTwoIV(){
 		
@@ -75,19 +84,17 @@ public class ExampleInputTester {
 		StatsProcessor.evaluateCV(config, csvPath, outputPath, ';');	
 		
 	}
-	
-	
+
 	/*
-	 * The file contains performance samples for two different classification algorithms and three different feature sets, resulting in 6 different models.
-	 * The dataset is split differently depending on the "fixIndependentVariable" setting in the configuration.
+	 * The file contains performance samples from training and testing one classifier with 10 different feature sets on 10 datasets.
+	 * One feature set represents a baselien which the others extend and are compared against.
 	 */
 	@Test
-	public void testTrainTestTwoIV(){
+	public void testTrainTestFeaturesBaseline(){
 		
 		StatsConfig config = StatsConfig.getInstance();
-		config.setFixIndependentVariable(StatsConfigConstants.INDEPENDENT_VARIABLES_VALUES.Classifier);
 
-		String csvPath = "src/main/resources/examples/TrainTest2IV.csv";
+		String csvPath = "src/main/resources/examples/TrainTestFeaturesBaseline.csv";
 		String outputPath = "src/main/resources/examples/";
 		StatsProcessor.evaluateTrainTest(config, csvPath, outputPath, ';');	
 		
