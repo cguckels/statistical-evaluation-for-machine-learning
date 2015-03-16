@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>STATSREP-ML by cguckels</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>STATSREP-ML</h1>
+        <p>Statistical Evaluation &amp; Reporting Framework for Machine Learning Results</p>
+
+        <p class="view"><a href="https://github.com/cguckels/statistical-evaluation-for-machine-learning">View the Project on GitHub <small>cguckels/statistical-evaluation-for-machine-learning</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/cguckels/statistical-evaluation-for-machine-learning/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/cguckels/statistical-evaluation-for-machine-learning/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/cguckels/statistical-evaluation-for-machine-learning">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>STATSREP-ML is an open-source solution for automating the process of eval- uating machine-learning results. It calculates qualitative statistics, performs the appropriate tests and reports them in a comprehensive way. It largely, but not exclusively, relies on well-tested and robust statistics implementations in R, and uses the tests the machine-learning community largely agreed upon.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Straight-forward configuration, either programmatically or using an XML file.</li>
+<li>Support for sample input from k-fold cross-validation, repeated cross-validation on one or multiple datasets, and train-test splits.</li>
+<li>Support for two or &gt;2 values of the independent variable, i.e. either classifiers or features. The appropriate tests for the number of groups are selected automatically. </li>
+<li>Support for sample sets with two independent variables, by automatically splitting the data along a predefined fixed independent variable value.</li>
+<li>Integration of both parametric and non-parametric omnibus- as well as post-hoc tests that are commonly used for comparing machine learning results. </li>
+<li>Integration of specific parametric and non-parametric tests to compare multiple models against a baseline, and support for input data annotations to indicate the baseline model.</li>
+<li>Automatic p-value correction and integration of several more and less conservative techniques for p-value adjustment.</li>
+<li>Testing of parametric test assumptions such as normality and sphericity, allowing an easy application of these algorithms.</li>
+<li>Generation of both a plain-text and a better structured \LaTeX\ report, comprising sample tables, qualitative statistics, basic graphs and the evaluation results.</li>
+</ul>
+
+<h2>
+<a id="available-tests-and-correction-methods" class="anchor" href="#available-tests-and-correction-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a>Available Tests and Correction Methods</h2>
+
+<ul>
+<li>Parametric, omnibus: dependent T-test, repeated Measure One-Way ANOVA</li>
+<li>Parametric, post-hoc: Dunett test, Tukey HSD test</li>
+<li>Non-parametric, omnibus: Wilcoxon Signed-Rank test, Friedman's test, McNemar test</li>
+<li>Non-parametric, post-hoc: Nemenyi test, pairwise Wilcoxon Signed-Rank test</li>
+<li>P-value correction methods: Bonferroni, Hochberg, Holm, Hommel, Benjamini-Hochberg, Benjamini-Yekuteli</li>
+</ul>
+
+<p>Additional tests can be easily integrated by means of calling the corresponding R packages or by implementing them natively in Java (See Wiki!).</p>
+
+<h2>
+<a id="how-to-cite" class="anchor" href="#how-to-cite" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Cite?</h2>
+
+<p>If you use STATSREP-ML in research, please cite the following paper (<a href="http://tuprints.ulb.tu-darmstadt.de/4294/1/Report_Final.pdf">Download</a>):</p>
+
+<p>Christian Guckelsberger, Axel Schulz (2014). STATSREP-ML: Statistical Evaluation &amp; Reporting Framework for Machine Learning Results. Technical Report. Published by tuprints [<a href="http://tuprints.ulb.tu-darmstadt.de/id/eprint/4294">http://tuprints.ulb.tu-darmstadt.de/id/eprint/4294</a>].</p>
+
+<h2>
+<a id="licence" class="anchor" href="#licence" aria-hidden="true"><span class="octicon octicon-link"></span></a>Licence</h2>
+
+<p>While most  STATSREP-ML modules are available under the Apache Software License (ASL) version 2, there are a few modules that depend on external libraries and are thus licensed under the GPL. The license of each individual module is specified in its LICENSE file.</p>
+
+<p>It must be pointed out that while the component's source code itself is licensed under the ASL or GPL, individual components might make use of third-party libraries or products that are not licensed under the ASL or GPL. Please make sure that you are aware of the third party licenses and respect them.</p>
+
+<hr>
+
+<p>This project was initiated under the auspices of Prof. Dr. Max Mühlhäuser, Telecooperation Lab (TK), Technische Universität Darmstadt.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/cguckels">cguckels</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-57585578-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
